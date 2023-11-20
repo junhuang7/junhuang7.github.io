@@ -48,6 +48,11 @@
         /* Additional styling based on observed layout */
         /* You can add more specific styles here */
     </style>
+        <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.7/dist/leaflet.css"/>
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.7.7/dist/leaflet.js"></script>
+    <!-- Your existing styles and scripts -->
 </head>
 <body>
     <div id="navbar">
@@ -93,5 +98,23 @@
         <!-- Contact content -->
     </div>
     <!-- Your existing JavaScript for smooth scrolling and IP tracking -->
+    <div id="ipMap" style="height: 300px;"></div>
+
+    <script>
+        fetch('https://ip-api.com/json')
+            .then(response => response.json())
+            .then(data => {
+                var map = L.map('ipMap').setView([data.lat, data.lon], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+                L.marker([data.lat, data.lon]).addTo(map)
+                    .bindPopup('Visitor IP Location').openPopup();
+            })
+            .catch(error => {
+                console.error('Error fetching IP:', error);
+            });
+    </script>
 </body>
 </html>
