@@ -18,7 +18,7 @@
             background: #333;
             color: #fff;
             padding: 10px;
-            text-align: center; /* Centering navbar items */
+            text-align: center;
         }
         #navbar a {
             color: #fff;
@@ -31,15 +31,15 @@
         .section {
             margin: 20px 0;
             padding: 10px;
-            background: #fff; /* Adding background to sections */
-            border-radius: 5px; /* Rounded corners for sections */
+            background: #fff;
+            border-radius: 5px;
         }
         .section > h2 {
             margin-bottom: 10px;
         }
-        /* Map container style */
         #map {
             height: 300px;
+            width: 100%;
             margin: 20px 0;
         }
     </style>
@@ -92,7 +92,7 @@
 
     <script>
         // Initialize the map
-        var map = L.map('map').setView([0, 0], 1); // Start with a global view
+        var map = L.map('map').setView([0, 0], 1);
 
         // Add OpenStreetMap tiles to the map
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -101,11 +101,11 @@
         }).addTo(map);
 
         // Fetch the IP information and display it on the map
-        fetch('http://ip-api.com/json')
+        fetch('https://ip-api.com/json') // Updated to HTTPS
             .then(response => response.json())
             .then(data => {
                 if (data.status === "success") {
-                    map.setView([data.lat, data.lon], 13); // Zoom into the IP location
+                    map.setView([data.lat, data.lon], 13);
                     L.marker([data.lat, data.lon]).addTo(map)
                         .bindPopup(`Visitor IP Location: ${data.city}, ${data.country}`).openPopup();
                 } else {
