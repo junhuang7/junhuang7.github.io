@@ -26,7 +26,7 @@
             margin: 0 10px;
         }
         #navbar a:hover {
-            color: #ddd;
+            background: #555;
         }
         .section {
             margin: 20px 0;
@@ -42,10 +42,8 @@
             width: 100%;
         }
     </style>
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.7/dist/leaflet.css"/>
-    <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet@1.7.7/dist/leaflet.js"></script>
+    <!-- Corrected Leaflet CSS URL -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css"/>
 </head>
 <body>
     <div id="navbar">
@@ -89,11 +87,12 @@
     <!-- Map container -->
     <div id="map"></div>
 
+    <!-- Corrected Leaflet JavaScript URL -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+
     <script>
         function initMap() {
-            // Coordinates for Bern, Switzerland
             var map = L.map('map').setView([46.9480, 7.4474], 13);
-
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap contributors'
