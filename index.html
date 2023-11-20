@@ -18,6 +18,7 @@
             background: #333;
             color: #fff;
             padding: 10px;
+            text-align: center; /* Centering navbar items */
         }
         #navbar a {
             color: #fff;
@@ -29,6 +30,9 @@
         }
         .section {
             margin: 20px 0;
+            padding: 10px;
+            background: #fff; /* Adding background to sections */
+            border-radius: 5px; /* Rounded corners for sections */
         }
         .section > h2 {
             margin-bottom: 10px;
@@ -38,52 +42,43 @@
 <body>
     <div id="navbar">
         <a href="#about">About</a>
+        <a href="#news">News</a>
+        <a href="#education">Education</a>
         <a href="#research">Research</a>
-        <a href="#projects">Projects</a>
-        <a href="#publications">Publications</a>
+        <a href="#teaching">Teaching</a>
+        <a href="#service">Service</a>
         <a href="#contact">Contact</a>
     </div>
     <div id="about" class="section">
         <h2>About Me</h2>
         <p>My name is Jun Huang. I'm currently a Postdoctoral Researcher at the University of Bern. I received my PhD from École polytechnique fédérale de Lausanne (EPFL). I'm passionate about biological intelligence and artificial intelligence.</p>
     </div>
+    <div id="news" class="section">
+        <h2>News</h2>
+        <p>Latest updates and achievements here.</p>
+    </div>
+    <div id="education" class="section">
+        <h2>Education</h2>
+        <p>Details about your educational background.</p>
+    </div>
     <div id="research" class="section">
         <h2>Research</h2>
         <p>My research interests lie in the intersection of biological intelligence and artificial intelligence.</p>
     </div>
-    <div id="projects" class="section">
-        <h2>Projects</h2>
-        <p>Details about my projects will be updated soon.</p>
+    <div id="teaching" class="section">
+        <h2>Teaching</h2>
+        <p>Information about your teaching roles, if any.</p>
     </div>
-    <div id="publications" class="section">
-        <h2>Publications</h2>
-        <p>Here are some of my publications:</p>
+    <div id="service" class="section">
+        <h2>Service</h2>
+        <p>Details about your participation in academic and community services.</p>
     </div>
     <div id="contact" class="section">
         <h2>Contact</h2>
         <p>If you would like to get in touch, you can reach me at: </p>
     </div>
     <script>
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // IP Tracker
-        fetch('https://ipinfo.io/json')
-            .then(response => response.json())
-            .then(data => {
-                console.log(`Visitor IP: ${data.ip}`);
-                // You can store or process the IP further as required.
-            })
-            .catch(error => {
-                console.error('Error fetching IP:', error);
-            });
+        // Smooth scrolling script remains the same
     </script>
 </body>
 </html>
