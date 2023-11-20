@@ -88,8 +88,6 @@
     <div id="map"></div>
 
     <!-- Corrected Leaflet JavaScript URL -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
-
     <script>
         function initMap() {
             var map = L.map('map').setView([46.9480, 7.4474], 13);
@@ -97,6 +95,22 @@
                 maxZoom: 19,
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
+
+            // Fetch the IP information and update the map
+            fetch('https://ip-api.com/json')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        map.setView([data.lat, data.lon], 13); // Center map on IP location
+                        L.marker([data.lat, data.lon]).addTo(map)
+                            .bindPopup(`Visitor IP Location: ${data.city}, ${data.country}`).openPopup();
+                    } else {
+                        console.error('Error in IP location data:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching IP location:', error);
+                });
         }
 
         document.addEventListener('DOMContentLoaded', initMap);
