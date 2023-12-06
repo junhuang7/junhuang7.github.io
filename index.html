@@ -8,8 +8,8 @@
   <style>
 
     :root {
-      --primary-color: #2c6e49;  
-      --secondary-color: #c3d99d;
+      --primary-color: #939ef3;  
+      --secondary-color: rgb(180, 38, 38);
     }
     
     body {
@@ -78,12 +78,12 @@
 
   <div id="about" class="section">
     <h1>About Me</h1>
-    <img src="jun.png">
-    <p>I am a postdoctoral researcher passionate about AI and brain science. Currently working at University of Bern analyzing neural data to understand intelligence.</p>
+    <img src="jun.jpg">
+    <p>I am a scientist passionate about AI and brain science. Currently working at University of Bern, analyzing neural data to understand intelligence.</p>
 
-    <p>I received my PhD from École polytechnique fédérale de Lausanne (EPFL) in Switzerland. My thesis focused on building computational models of early sensory processing in the brain. I have authored several publications on this topic.</p>
+    <p>I received my PhD from École polytechnique fédérale de Lausanne (EPFL) in Switzerland. My thesis focused on understanding the dopamine dynamics in reward-based learning. </p>
 
-    <p>In my free time I enjoy hiking in the Alps, photography, and playing chess.</p>
+    <p>In my free time I enjoy hiking in the Alps, skiing and photography.</p>
   </div>
 
   <div id="research" class="section">
@@ -117,35 +117,6 @@
     <h2>Contact</h2>   
     <p>Email: jun.huang @ university.edu</p>
   </div>
-
-  <div id="map"></div>
-
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-
-  <script>
-
-    var map = L.map('map').setView([46.9480, 7.4474], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    function onLocationFound(e) {
-      L.marker(e.latlng).addTo(map)
-        .bindPopup("You are here").openPopup();
-
-      map.setView(e.latlng, 13);
-    }
-
-    function onLocationError(e) {
-      alert(e.message);
-    }
-
-    map.on('locationfound', onLocationFound);
-
-    map.locate({setView: true, maxZoom: 16});
-
-  </script>
 
 </body>
 </html>
