@@ -4,6 +4,7 @@
   <title>Jun Huang</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
   
   <style>
     :root {
@@ -33,7 +34,7 @@
       background-color: var(--background-color);
       color: var(--text-color);
     }
-    
+
     a {
       text-decoration: none;
       color: var(--link-color);
@@ -50,13 +51,13 @@
       display: flex;
       justify-content: space-between;  
     }
-    
+
     #navbar a {
       color: var(--navbar-text-color);
       margin: 0 1rem;
       font-weight: bold;
     }
-    
+
     #navbar a.active {
       border-bottom: 2px solid #fff;
     }
@@ -69,7 +70,7 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);  
       border-radius: 5px;
     }
-    
+
     #about img {
       float: left;
       width: 200px;
@@ -78,17 +79,55 @@
     }
 
     #theme-toggle {
-      margin: 0;
-      display: flex;
-      align-items: center;
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
     }
 
-    #theme-toggle label {
-      margin-right: 10px;
-      color: var(--navbar-text-color);
+    #dark-mode-toggle {
+      display: none; /* Hide the checkbox */
+    }
+
+    label {
+      cursor: pointer;
+      width: 40px; /* Adjust the width */
+      height: 20px; /* Adjust the height */
+      background: grey;
+      display: block;
+      border-radius: 50px;
+      position: relative;
+      transition: background-color 0.3s;
+    }
+
+    label i {
+      color: white;
+      position: absolute;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .fa-moon, .fa-sun {
+      font-size: 16px; /* Adjust icon size */
+      top: 2px; /* Adjust vertical position */
+      left: 5px; /* Adjust horizontal position */
+    }
+
+    #dark-mode-toggle:checked + label .fa-moon {
+      transform: translateX(20px); /* Move the moon icon to the right */
+      opacity: 0; /* Hide the moon icon */
+    }
+
+    #dark-mode-toggle:checked + label .fa-sun {
+      opacity: 1; /* Show the sun icon */
+    }
+
+    .fa-sun {
+      opacity: 0; /* Initially hide the sun icon */
+    }
+
+    #dark-mode-toggle:checked {
+      transform: translateX(20px);
     }
   </style>
-
 </head>
 
 <body>
@@ -101,8 +140,12 @@
       <a href="#contact">Contact</a>
     </div>
     <div id="theme-toggle">
-      <label for="dark-mode-toggle">Dark Mode:</label>
       <input type="checkbox" id="dark-mode-toggle">
+      <label for="dark-mode-toggle">
+        <i class="fas fa-sun"></i>
+        <i class="fas fa-moon"></i>
+        <div class="ball"></div>
+      </label>
     </div>
   </div>
 
