@@ -6,21 +6,37 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   
   <style>
-
     :root {
       --primary-color: #939ef3;  
       --secondary-color: rgb(180, 38, 38);
+      --background-color: #fff;
+      --text-color: #000;
+      --link-color: var(--primary-color);
+      --section-background: #fff;
+      --navbar-background: var(--primary-color);
+      --navbar-text-color: #fff;
     }
-    
+
+    [data-theme="dark"] {
+      --background-color: #333;
+      --text-color: #f5f5f5;
+      --link-color: var(--secondary-color);
+      --section-background: #444;
+      --navbar-background: var(--secondary-color);
+      --navbar-text-color: #fff;
+    }
+
     body {
       font-family: 'Open Sans', sans-serif;
       margin: 0;
-      line-height: 1.6; 
+      line-height: 1.6;
+      background-color: var(--background-color);
+      color: var(--text-color);
     }
     
     a {
       text-decoration: none;
-      color: var(--primary-color);
+      color: var(--link-color);
     }
 
     h1, h2, h3 {
@@ -28,15 +44,15 @@
     }
 
     #navbar {
-      background: var(--primary-color);
-      color: #fff;  
+      background: var(--navbar-background);
+      color: var(--navbar-text-color);
       padding: 1rem;
       display: flex;
-      justify-content: center;  
+      justify-content: space-between;  
     }
     
     #navbar a {
-      color: #fff;
+      color: var(--navbar-text-color);
       margin: 0 1rem;
       font-weight: bold;
     }
@@ -49,7 +65,7 @@
       max-width: 800px;
       margin: 2rem auto;  
       padding: 2rem;
-      background: #fff;
+      background: var(--section-background);
       box-shadow: 0 0 10px rgba(0,0,0,0.1);  
       border-radius: 5px;
     }
@@ -61,19 +77,33 @@
       border-radius: 50%;
     }
 
-  </style>
+    #theme-toggle {
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    #theme-toggle label {
+      margin-right: 10px;
+      color: var(--navbar-text-color);
+    }
+  </style>
 
 </head>
 
 <body>
 
   <div id="navbar">
-    <a href="#about" class="active">About</a>
-    <a href="#research">Research</a> 
-    <a href="#publications">Publications</a>
-    <a href="#contact">Contact</a>
+    <div>
+      <a href="#about" class="active">About</a>
+      <a href="#research">Research</a> 
+      <a href="#publications">Publications</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div id="theme-toggle">
+      <label for="dark-mode-toggle">Dark Mode:</label>
+      <input type="checkbox" id="dark-mode-toggle">
+    </div>
   </div>
 
   <div id="about" class="section">
@@ -117,6 +147,16 @@
     <h2>Contact</h2>   
     <p>Email: jun.huang @ university.edu</p>
   </div>
+
+  <script>
+    document.getElementById('dark-mode-toggle').addEventListener('change', function(event) {
+      if (event.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+    });
+  </script>
 
 </body>
 </html>
