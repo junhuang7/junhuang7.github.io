@@ -166,6 +166,13 @@
       margin-right: 5px;
     }
 
+    footer {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--navbar-background);
+    color: var(--navbar-text-color);
+  }
+
   </style>
 </head>
 
@@ -285,6 +292,19 @@
       }
     });
   </script>
+
+  <footer>
+    <p id="copyright">
+      © Copyright 2023 Jun HUANG. Last updated: <span id="date"></span>.
+    </p>
+  </footer>
+
+  <script>
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('date').textContent = formattedDate;
+  </script>
+  
 
 </body>
 </html>
