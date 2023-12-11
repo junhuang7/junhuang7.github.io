@@ -14,8 +14,8 @@
       --text-color: #000;
       --link-color: var(--primary-color);
       --section-background: #fff;
-      --navbar-background: var(--primary-color);
-      --navbar-text-color: #fff;
+      --navbar-background: var(--background-color);
+      --navbar-text-color: var(--text-color);
     }
 
     [data-theme="dark"] {
@@ -25,6 +25,10 @@
       --section-background: #444;
       --navbar-background: var(--secondary-color);
       --navbar-text-color: #fff;
+    }
+
+    [data-theme="dark"] #navbar a {
+      color: var(--text-color);
     }
 
     body {
@@ -49,7 +53,7 @@
       top: 0;
       width: 100%;
       z-index: 1000;
-      background: var(--navbar-background);
+      background: var(--background-color);
       color: var(--navbar-text-color);
       padding: 1rem;
       display: flex;
@@ -78,9 +82,12 @@
     }
 
     .section {
+
       max-width: 800px;
       margin: 2rem auto;  
       padding: 2rem;
+      padding-top: 50px; /* Adjust this value based on the height of your navbar */
+      margin-top: -50px auto; /* Negative margin to offset the padding for anchor link alignment */
       background: var(--section-background);
       box-shadow: 0 0 10px rgba(0,0,0,0.1);  
       border-radius: 5px;
@@ -111,7 +118,7 @@
     }
 
     label i {
-      color: white;
+      color: var(--text-color);
       position: absolute;
       top: 10px; /* Adjust vertical position */
       left: 10px; /* Adjust horizontal position */
@@ -199,9 +206,9 @@
   </div>
 
   <div id="about" class="section">
-    <h1>About Me</h1>
+    <h1>Jun HUANG</h1>
     <img src="jun.jpg">
-    <p>I am Jun Huang, a scientist passionate about AI and brain science. Currently working at University of Bern, analyzing neural data to understand intelligence.</p>
+    <p>I am a scientist passionate about AI and brain science. Currently working at University of Bern, analyzing neural data to understand intelligence.</p>
 
     <p>I received my PhD from École polytechnique fédérale de Lausanne (EPFL) in Switzerland. My thesis focused on understanding the dopamine dynamics in reward-based learning. </p>
 
