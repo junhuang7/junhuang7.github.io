@@ -134,23 +134,14 @@
       transform: translateX(20px);
     }
 
+    /* Default icon color (gray) */
     #contact a {
       display: inline-block;
       margin-right: 15px;
-      text-decoration: none;
-      color: var(--text-color); /* Using the same color as the overall text */
+      color: #808080; /* Gray color for icons */
+      font-size: 50px;
     }
 
-    /* Default icon color (gray) */
-    #contact .fa-linkedin,
-    #contact .fa-github,
-    #contact .fa-instagram,
-    #contact .fa-envelope {
-      color: #808080; /* Gray color */
-      font-size: 30px;
-    }
-
-    /* Hover effects */
     #contact .fa-linkedin:hover {
       color: #0A66C2; /* LinkedIn Blue */
     }
@@ -246,7 +237,6 @@
       </a>
     </p>
   </div>
-
 
   <script>
     document.getElementById('dark-mode-toggle').addEventListener('change', function(event) {
