@@ -7,7 +7,191 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
   
   <style>
-    /* Same CSS as in your main HTML file */
+    :root {
+      --primary-color: #939ef3;  
+      --secondary-color: #808080;
+      --background-color: #fff;
+      --text-color: #000;
+      --link-color: var(--primary-color);
+      --section-background: #fff;
+      --navbar-background: var(--background-color);
+      --navbar-text-color: var(--text-color);
+    }
+
+    [data-theme="dark"] {
+      --background-color: #1c1c1d;
+      --text-color: #f5f5f5;
+      --link-color: var(--secondary-color);
+      --section-background: #2a2a2b;
+      --navbar-background: var(--secondary-color);
+      --navbar-text-color: #fff;
+    }
+
+    [data-theme="dark"] #navbar a {
+      color: var(--text-color);
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      line-height: 1.6;
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--link-color);
+    }
+
+    h1, h2, h3 {
+      margin-bottom: 10px; 
+    }
+
+    #navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: var(--background-color);
+      color: var(--navbar-text-color);
+      padding: 1rem;
+      display: flex;
+      justify-content: center; /* Center the navbar container */
+      align-items: center;
+    }
+
+    #nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Center the contents */
+    }
+
+    #nav-container a {
+      margin: 0 10px; /* Add some space between links */
+    }
+
+    #navbar a {
+      color: var(--navbar-text-color);
+      margin: 0 1rem;
+      font-size: 15px;
+      font-weight: bold;
+    }
+    #navbar a:hover {
+      color: #db4f69; /* Replace with the reddish color you want on hover */
+    }
+
+    #navbar a.active {
+      color: #4a90e2; /* Replace with the bluish color you want for the active link */
+    }
+
+    /* Ensure the color does not change on hover for the active link */
+    #navbar a.active:hover {
+      color: #4a90e2;
+    }
+
+    .section {
+      max-width: 800px;
+      margin: 2rem auto;  
+      padding: 2rem;
+      padding-top: 50px; /* Adjust this value based on the height of your navbar */
+      margin-top: -50px auto; /* Negative margin to offset the padding for anchor link alignment */
+      background: var(--section-background);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);  
+      border-radius: 5px;
+    }
+
+    #about img {
+      float: left;
+      width: 200px;
+      margin-right: 20px;
+      border-radius: 50%;
+    }
+
+    #theme-toggle {
+      margin-left: 20px; /* Add some space before the toggle switch */
+    }
+
+    #dark-mode-toggle {
+      display: none; /* Hide the checkbox */
+    }
+
+    label {
+      cursor: pointer;
+      width: 40px; /* Width of the toggle area */
+      height: 40px; /* Height of the toggle area */
+      display: block;
+      position: relative;
+      background: none; /* Removing the background */
+    }
+
+    label i {
+      color: var(--text-color);
+      position: absolute;
+      top: 10px; /* Adjust vertical position */
+      left: 10px; /* Adjust horizontal position */
+      transition: opacity 0.3s;
+    }
+
+    .fa-moon, .fa-sun {
+      font-size: 20px; /* Adjust icon size */
+    }
+
+    #dark-mode-toggle:checked + label .fa-moon {
+      opacity: 0; /* Hide the moon icon */
+    }
+
+    #dark-mode-toggle:checked + label .fa-sun {
+      opacity: 1; /* Show the sun icon */
+    }
+
+    .fa-sun {
+      opacity: 0; /* Initially hide the sun icon */
+    }
+
+    #dark-mode-toggle:checked {
+      transform: translateX(20px);
+    }
+
+    /* Default icon color (gray) */
+    #contact a {
+      display: inline-block;
+      margin-right: 15px;
+      color: #808080; /* Gray color for icons */
+      font-size: 50px;
+    }
+
+    #contact .fa-linkedin:hover {
+      color: #0A66C2; /* LinkedIn Blue */
+    }
+
+    #contact .fa-github:hover {
+      color: #181717; /* GitHub Black */
+    }
+
+    #contact .fa-instagram:hover {
+      color: #E1306C; /* Instagram Pink */
+    }
+
+    #contact .fa-youtube:hover {
+      color: #FF0000; /* YouTube Red */
+    }
+
+    #contact .fa-envelope:hover {
+      color: #0072C6; /* Email Blue */
+    }
+
+    #contact i {
+      margin-right: 5px;
+    }
+
+    footer {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--navbar-background);
+    color: var(--navbar-text-color);
+  }
+
   </style>
 </head>
 
@@ -67,12 +251,38 @@
     </div>
   </div>
 
+  <script>
+    document.getElementById('dark-mode-toggle').checked = true;
+
+    document.getElementById('dark-mode-toggle').addEventListener('change', function(event) {
+      if (event.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+    });
+  </script>
+
   <footer>
-    <!-- Footer content -->
+    <p id="copyright">
+      © Copyright 2023 Jun HUANG. Last updated: <span id="date"></span>.
+    </p>
   </footer>
 
   <script>
-    // JavaScript for theme toggle and active link highlighting
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('date').textContent = formattedDate;
+  </script>
+
+  <script>
+    // JavaScript to toggle the active class on click
+    document.querySelectorAll('#nav-container a').forEach(link => {
+      link.addEventListener('click', function() {
+        document.querySelector('#nav-container a.active').classList.remove('active');
+        this.classList.add('active');
+      });
+    });
   </script>
 
 </body>
