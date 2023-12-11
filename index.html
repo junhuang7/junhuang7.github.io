@@ -49,7 +49,18 @@
       color: var(--navbar-text-color);
       padding: 1rem;
       display: flex;
-      justify-content: space-between;  
+      justify-content: center; /* Center the navbar container */
+      align-items: center;
+    }
+
+    #nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Center the contents */
+    }
+
+    #nav-container a {
+      margin: 0 10px; /* Add some space between links */
     }
 
     #navbar a {
@@ -79,9 +90,7 @@
     }
 
     #theme-toggle {
-      position: absolute;
-      right: 1rem;
-      top: 1rem;
+      margin-left: 20px; /* Add some space before the toggle switch */
     }
 
     #dark-mode-toggle {
@@ -90,29 +99,26 @@
 
     label {
       cursor: pointer;
-      width: 40px; /* Adjust the width */
-      height: 20px; /* Adjust the height */
-      background: grey;
+      width: 40px; /* Width of the toggle area */
+      height: 40px; /* Height of the toggle area */
       display: block;
-      border-radius: 50px;
       position: relative;
-      transition: background-color 0.3s;
+      background: none; /* Removing the background */
     }
 
     label i {
       color: white;
       position: absolute;
-      transition: transform 0.3s, opacity 0.3s;
+      top: 10px; /* Adjust vertical position */
+      left: 10px; /* Adjust horizontal position */
+      transition: opacity 0.3s;
     }
 
     .fa-moon, .fa-sun {
-      font-size: 16px; /* Adjust icon size */
-      top: 2px; /* Adjust vertical position */
-      left: 5px; /* Adjust horizontal position */
+      font-size: 20px; /* Adjust icon size */
     }
 
     #dark-mode-toggle:checked + label .fa-moon {
-      transform: translateX(20px); /* Move the moon icon to the right */
       opacity: 0; /* Hide the moon icon */
     }
 
@@ -133,19 +139,18 @@
 <body>
 
   <div id="navbar">
-    <div>
+    <div id="nav-container">
       <a href="#about" class="active">About</a>
       <a href="#research">Research</a> 
       <a href="#publications">Publications</a>
       <a href="#contact">Contact</a>
-    </div>
-    <div id="theme-toggle">
-      <input type="checkbox" id="dark-mode-toggle">
-      <label for="dark-mode-toggle">
-        <i class="fas fa-sun"></i>
-        <i class="fas fa-moon"></i>
-        <div class="ball"></div>
-      </label>
+      <div id="theme-toggle">
+        <input type="checkbox" id="dark-mode-toggle">
+        <label for="dark-mode-toggle">
+          <i class="fas fa-sun"></i>
+          <i class="fas fa-moon"></i>
+        </label>
+      </div>
     </div>
   </div>
 
