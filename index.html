@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="dark">
 <head>
   <title>Jun Huang</title>
   
@@ -295,6 +295,8 @@
   </div>
 
   <script>
+    document.getElementById('dark-mode-toggle').checked = true;
+    
     document.getElementById('dark-mode-toggle').addEventListener('change', function(event) {
       if (event.target.checked) {
         document.documentElement.setAttribute('data-theme', 'dark');
