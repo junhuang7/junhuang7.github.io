@@ -133,6 +133,19 @@
     #dark-mode-toggle:checked {
       transform: translateX(20px);
     }
+
+    #contact a {
+      display: inline-block;
+      margin-right: 15px;
+      color: var(--link-color);
+      text-decoration: none;
+    }
+
+    #contact i {
+      margin-right: 5px;
+    }
+
+    
   </style>
 </head>
 
@@ -192,9 +205,23 @@
   </div>
 
   <div id="contact" class="section">
-    <h2>Contact</h2>   
-    <p>Email: jun.huang @ university.edu</p>
+    <h2>Contact</h2>
+    <p>
+      <a href="https://www.linkedin.com/in/junhuang7" target="_blank">
+        <i class="fab fa-linkedin"></i> LinkedIn
+      </a>
+      <a href="https://github.com/junhuang7" target="_blank">
+        <i class="fab fa-github"></i> GitHub
+      </a>
+      <a href="https://www.instagram.com/junhuang798" target="_blank">
+        <i class="fab fa-instagram"></i> Instagram
+      </a>
+      <a href="mailto:junhuang7@gmail.com">
+        <i class="fas fa-envelope"></i> Email
+      </a>
+    </p>
   </div>
+
 
   <script>
     document.getElementById('dark-mode-toggle').addEventListener('change', function(event) {
