@@ -298,29 +298,29 @@
   </script>
 
   <script>
+    // Function to apply the theme
+    function applyTheme(dark) {
+      if (dark) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('dark-mode-toggle').checked = true;
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        document.getElementById('dark-mode-toggle').checked = false;
+      }
+    }
+
     // Check and apply the saved theme on page load
     document.addEventListener('DOMContentLoaded', function() {
       const savedTheme = localStorage.getItem('theme');
-      const darkModeToggle = document.getElementById('dark-mode-toggle');
-
-      if (savedTheme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        darkModeToggle.checked = true;
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-        darkModeToggle.checked = false;
-      }
+      
+      // Default to dark theme
+      applyTheme(savedTheme !== 'light');
     });
 
     // Save the theme choice and apply it
     document.getElementById('dark-mode-toggle').addEventListener('change', function(event) {
-      if (event.target.checked) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'light');
-      }
+      applyTheme(event.target.checked);
+      localStorage.setItem('theme', event.target.checked ? 'dark' : 'light');
     });
 
     // Handle navbar link active state
@@ -331,6 +331,7 @@
       });
     });
   </script>
+
 
 
 </body>
