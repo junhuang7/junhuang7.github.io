@@ -99,6 +99,21 @@
       border-radius: 5px;
     }
 
+    .research-item h3 {
+      color: var(--link-color);
+    }
+
+    .institution, .date-range {
+      color: var(--text-color);
+      font-style: italic;
+      font-size: 0.9em;
+    }
+
+    .research-description {
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
     #about img {
       float: left;
       width: 200px;
@@ -192,28 +207,6 @@
 
   </style>
 
-  <style>
-    .research-container {
-      max-width: 800px;
-      margin: 2rem auto;  
-      padding: 2rem;
-      background: var(--section-background);
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);  
-      border-radius: 5px;
-    }
-    .research-item h3 {
-      color: var(--link-color);
-    }
-    .institution, .date-range {
-      color: var(--text-color);
-      font-style: italic;
-      font-size: 0.9em;
-    }
-    .research-description {
-      margin-top: 0.5rem;
-      line-height: 1.5;
-    }
-  </style>
 </head>
 
 <body>
@@ -235,7 +228,7 @@
   </div>
 
   <!-- Research Projects Section -->
-  <div class="research-container">
+  <div class="section">
     <h2>Research Projects</h2>
     
     <!-- Studying the neural mechanisms underlying chronic pain -->
@@ -248,45 +241,42 @@
         spatial omics and other techniques, with a focus on the ACC-PAG circuitry.
       </p>
     </div>
+  </div>
 
+  <div class="section">
     <!-- Investigating the neural mechanisms in reward-based learning -->
     <div class="research-item">
       <h3>Investigating the Neural Mechanisms in Reward-Based Learning</h3>
       <p class="institution">Laboratory of Behavioral Genetics&Laboratory of Sensory Processing, EPFL</p>
       <p class="date-range">June 2018 - Dec 2022</p>
       <p class="research-description">
-        Investigated the neural mechanisms underlying the individual differences in reward-based learning tasks. The
-        dopamine activity was chronically measured before and during the learning process of a whisker detection learning
-        task using a combined behavioral & fiber photometry recording approach. A pre-lick dopamine activity dip was
-        found in some animals before learning, which turned out to be predictive of their future learning performances.
+        Investigated the neural mechanisms underlying the individual differences in reward-based learning tasks...
       </p>
     </div>
+  </div>
 
+  <div class="section">
     <!-- Understanding the late-associativity in auditory-amygdala circuits -->
     <div class="research-item">
       <h3>Understanding the Late-Associativity in Auditory-Amygdala Circuits</h3>
       <p class="institution">CAS Key Laboratory of Brain Function&Diseases, USTC</p>
       <p class="date-range">Sept 2015 - Dec 2017</p>
       <p class="research-description">
-        Investigated the temporal requirements for fear conditioning association by using a combined behavioral &
-        optogenetics approach. In contrast to the tight temporal requirement for classical CS-US paired conditioning,
-        a distant association was found to be formed between temporally distant stimuli when the CS is strong.
+        Investigated the temporal requirements for fear conditioning association...
       </p>
     </div>
+  </div>
 
+  <div class="section">
     <!-- Developing a psycho-physiology recording platform for rodents -->
     <div class="research-item">
       <h3>Developing a Psycho-Physiology Recording Platform for Rodents</h3>
       <p class="institution">Cell Electrophysiology Laboratory, Wannan Medical College</p>
       <p class="date-range">Nov 2010 - June 2013</p>
       <p class="research-description">
-        Established a platform for synchronized recording of central neural activities and peripheral functions via
-        simultaneous recording of the electrical signals from two brain regions and multiple physiological signs, such as
-        ECG, EMG, Breath rate, skin conductance and body temperature. This platform provides an appropriate
-        approach for exploring the mechanisms underlying addiction and other mental illness.
+        Established a platform for synchronized recording of central neural activities and peripheral functions...
       </p>
     </div>
-
   </div>
 
   <script>
