@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <title>Deutsch Lernkarte</title>
 <style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .calendar {
+    width: 25%;
+    text-align: right;
+  }
   table {
     width: 80%;
     margin: 20px auto;
@@ -14,16 +26,16 @@
     text-align: center;
   }
   th:first-child, td:first-child {
-    width: 20%; /* Adjust this percentage to change the width of the 'Datum' column */
+    width: 20%;
   }
   tr:not(:first-child) {
     border-top: 1px solid #ccc;
   }
   tr:nth-child(even) {
-    background-color: #f2f2f2; /* Light gray color for even rows */
+    background-color: #f2f2f2;
   }
   tr:nth-child(odd) {
-    background-color: #e7f3fe; /* Light blue color for odd rows */
+    background-color: #e7f3fe;
   }
   .checked {
     background-color: #a4d7a5;
@@ -36,13 +48,20 @@
     background-color: #fff;
     border: none;
     width: 100%;
-    min-width: 100px; /* Adjust as needed */
+    min-width: 100px;
   }
 </style>
 </head>
 <body>
-<h2>Deutsch Lernkarte</h2>
-<select id="yearMonthSelect" onchange="generateDays(this.value)">
+<div class="header">
+  <h2>Deutsch Lernkarte</h2>
+  <div class="calendar">
+    <table id="calendarTable">
+      <!-- Calendar filled by JavaScript -->
+    </table>
+  </div>
+</div>
+<select id="yearMonthSelect" onchange="changeMonth(this.value)">
   <!-- Options filled by JavaScript -->
 </select>
 <table id="daysTable">
@@ -75,13 +94,38 @@ function populateYearMonthSelector() {
       }
     }
   }
+  changeMonth(select.value);
 }
 
-function loadTableForCurrentMonth() {
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
-  const currentMonthPadded = currentMonth.toString().padStart(2, '0');
-  generateDays(`${currentYear}-${currentMonthPadded}`);
+function changeMonth(yearMonth) {
+  generateDays(yearMonth);
+  generateCalendar(yearMonth);
+}
+
+function generateCalendar(yearMonth) {
+  const [year, month] = yearMonth.split('-');
+  const firstDay = new Date(year, month - 1, 1).getDay();
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const calendarTable = document.getElementById('calendarTable');
+  calendarTable.innerHTML = '';
+  let day = 1;
+  for (let i = 0; i < 6; i++) {
+    const row = calendarTable.insertRow(-1);
+    for (let j = 0; j < 7; j++) {
+      const cell = row.insertCell(-1);
+      if (i === 0 && j < firstDay || day > daysInMonth) {
+        cell.innerHTML = '';
+      } else {
+        const date = `${year}-${month}-${day.toString().padStart(2, '0')}`;
+        cell.innerHTML = day;
+        if (localStorage.getItem(date + '-status') === 'true') {
+          cell.classList.add('marked');
+        }
+        day++;
+      }
+    }
+    if (day > daysInMonth) break;
+  }
 }
 
 function generateDays(yearMonth) {
