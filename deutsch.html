@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Deutsch Lernkarte</title>
+<style>
+  table {
+    width: 50%;
+    margin: 20px auto;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+  }
+  .checked {
+    background-color: #a4d7a5;
+  }
+</style>
+</head>
+<body>
+<h2>Deutsch Lernkarte</h2>
+<table>
+  <tr>
+    <th>Datum</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>2024-04-25</td>
+    <td onclick="toggleCheck(this)">Klicken zum Markieren</td>
+  </tr>
+  <tr>
+    <td>2024-04-26</td>
+    <td onclick="toggleCheck(this)">Klicken zum Markieren</td>
+  </tr>
+  <!-- Weitere Zeilen hinzufügen nach Bedarf -->
+</table>
+<script>
+function toggleCheck(cell) {
+  if (cell.classList.contains('checked')) {
+    cell.classList.remove('checked');
+    cell.textContent = 'Klicken zum Markieren';
+  } else {
+    cell.classList.add('checked');
+    cell.textContent = 'Markiert';
+  }
+}
+</script>
+</body>
+</html>
