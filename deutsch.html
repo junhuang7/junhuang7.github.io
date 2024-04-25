@@ -2,7 +2,8 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>🇨🇭Deutsch Lernkarte</title>
+<title>Deutsch Lernkarte</title>
+<link rel="icon" type="image/svg+xml" href="pics/swiss.svg">
 <style>
   body {
     font-family: 'Comic Sans MS', 'Comic Sans', cursive; /* Artistic font for the streak message */
@@ -200,7 +201,6 @@ function toggleCheck(cell, date) {
   cell.textContent = isChecked ? 'Markiert' : 'Klicken zum Markieren';
   localStorage.setItem(date + '-status', isChecked);
   changeMonth(document.getElementById('yearMonthSelect').value); // Refresh calendar and streak message
-
 }
 </script>
 </body>
