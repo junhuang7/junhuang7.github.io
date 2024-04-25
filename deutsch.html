@@ -5,7 +5,7 @@
 <title>Deutsch Lernkarte</title>
 <style>
   table {
-    width: 50%;
+    width: 80%;
     margin: 20px auto;
     border-collapse: collapse;
   }
@@ -17,33 +17,89 @@
   .checked {
     background-color: #a4d7a5;
   }
+  select {
+    margin: 20px auto;
+    display: block;
+  }
 </style>
 </head>
 <body>
 <h2>Deutsch Lernkarte</h2>
-<table>
+<select id="yearMonthSelect" onchange="generateDays(this.value)">
+  <!-- Options filled by JavaScript -->
+</select>
+<table id="daysTable">
   <tr>
     <th>Datum</th>
+    <th>Lerninhalt</th>
+    <th>Lernzeit</th>
     <th>Status</th>
   </tr>
-  <tr>
-    <td>2024-04-25</td>
-    <td onclick="toggleCheck(this)">Klicken zum Markieren</td>
-  </tr>
-  <tr>
-    <td>2024-04-26</td>
-    <td onclick="toggleCheck(this)">Klicken zum Markieren</td>
-  </tr>
-  <!-- Weitere Zeilen hinzufügen nach Bedarf -->
+  <!-- Rows will be added by JavaScript -->
 </table>
 <script>
-function toggleCheck(cell) {
+window.onload = function() {
+  populateYearMonthSelector();
+  loadTableForCurrentMonth();
+};
+
+function populateYearMonthSelector() {
+  const select = document.getElementById('yearMonthSelect');
+  const currentYear = new Date().getFullYear();
+  for (let year = currentYear - 1; year <= currentYear + 1; year++) {
+    for (let month = 1; month <= 12; month++) {
+      const option = document.createElement('option');
+      const monthPadded = month.toString().padStart(2, '0');
+      option.value = `${year}-${monthPadded}`;
+      option.textContent = `${year}-${monthPadded}`;
+      select.appendChild(option);
+      if (new Date().getMonth() + 1 === month && currentYear === year) {
+        option.selected = true;
+      }
+    }
+  }
+}
+
+function loadTableForCurrentMonth() {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+  const currentMonthPadded = currentMonth.toString().padStart(2, '0');
+  generateDays(`${currentYear}-${currentMonthPadded}`);
+}
+
+function generateDays(yearMonth) {
+  const [year, month] = yearMonth.split('-');
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const table = document.getElementById('daysTable');
+  table.innerHTML = '<tr><th>Datum</th><th>Lerninhalt</th><th>Lernzeit</th><th>Status</th></tr>';
+  for (let day = daysInMonth; day > 0; day--) {
+    const date = `${year}-${month}-${day.toString().padStart(2, '0')}`;
+    const row = table.insertRow(-1);
+    const cellDate = row.insertCell(0);
+    const cellContent = row.insertCell(1);
+    const cellTime = row.insertCell(2);
+    const cellStatus = row.insertCell(3);
+    cellDate.textContent = date;
+    cellContent.textContent = 'Inhalt hier einfügen';
+    cellTime.textContent = 'Zeit hier einfügen';
+    cellStatus.textContent = 'Klicken zum Markieren';
+    cellStatus.onclick = function() { toggleCheck(this, date); };
+    if (localStorage.getItem(date) === 'true') {
+      cellStatus.classList.add('checked');
+      cellStatus.textContent = 'Markiert';
+    }
+  }
+}
+
+function toggleCheck(cell, date) {
   if (cell.classList.contains('checked')) {
     cell.classList.remove('checked');
     cell.textContent = 'Klicken zum Markieren';
+    localStorage.setItem(date, 'false');
   } else {
     cell.classList.add('checked');
     cell.textContent = 'Markiert';
+    localStorage.setItem(date, 'true');
   }
 }
 </script>
