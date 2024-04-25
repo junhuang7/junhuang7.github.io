@@ -21,6 +21,10 @@
     margin: 20px auto;
     display: block;
   }
+  .editable {
+    background-color: #fff;
+    border: none;
+  }
 </style>
 </head>
 <body>
@@ -72,7 +76,7 @@ function generateDays(yearMonth) {
   const daysInMonth = new Date(year, month, 0).getDate();
   const table = document.getElementById('daysTable');
   table.innerHTML = '<tr><th>Datum</th><th>Lerninhalt</th><th>Lernzeit</th><th>Status</th></tr>';
-  for (let day = daysInMonth; day > 0; day--) {
+  for (let day = 1; day <= daysInMonth; day++) {
     const date = `${year}-${month}-${day.toString().padStart(2, '0')}`;
     const row = table.insertRow(-1);
     const cellDate = row.insertCell(0);
@@ -80,8 +84,10 @@ function generateDays(yearMonth) {
     const cellTime = row.insertCell(2);
     const cellStatus = row.insertCell(3);
     cellDate.textContent = date;
-    cellContent.textContent = 'Inhalt hier einfügen';
-    cellTime.textContent = 'Zeit hier einfügen';
+    cellContent.contentEditable = true;
+    cellContent.classList.add('editable');
+    cellTime.contentEditable = true;
+    cellTime.classList.add('editable');
     cellStatus.textContent = 'Klicken zum Markieren';
     cellStatus.onclick = function() { toggleCheck(this, date); };
     if (localStorage.getItem(date) === 'true') {
