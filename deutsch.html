@@ -13,8 +13,17 @@
     padding: 8px;
     text-align: center;
   }
+  th:first-child, td:first-child {
+    width: 20%; /* Adjust this percentage to change the width of the 'Datum' column */
+  }
   tr:not(:first-child) {
     border-top: 1px solid #ccc;
+  }
+  tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light gray color for even rows */
+  }
+  tr:nth-child(odd) {
+    background-color: #e7f3fe; /* Light blue color for odd rows */
   }
   .checked {
     background-color: #a4d7a5;
