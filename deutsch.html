@@ -135,7 +135,7 @@ function generateCalendar(yearMonth) {
         const date = `${year}-${month}-${day.toString().padStart(2, '0')}`;
         cell.innerHTML = day;
         if (localStorage.getItem(date + '-status') === 'true') {
-          cell.classList.add('marked');
+          cell.classList.add('checked');
         }
         day++;
       }
