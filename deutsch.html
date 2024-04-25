@@ -10,9 +10,11 @@
     border-collapse: collapse;
   }
   th, td {
-    border: 1px solid #ccc;
     padding: 8px;
     text-align: center;
+  }
+  tr:not(:first-child) {
+    border-top: 1px solid #ccc;
   }
   .checked {
     background-color: #a4d7a5;
@@ -24,6 +26,8 @@
   .editable {
     background-color: #fff;
     border: none;
+    width: 100%;
+    min-width: 100px; /* Adjust as needed */
   }
 </style>
 </head>
@@ -86,27 +90,22 @@ function generateDays(yearMonth) {
     cellDate.textContent = date;
     cellContent.contentEditable = true;
     cellContent.classList.add('editable');
+    cellContent.textContent = localStorage.getItem(date + '-content') || '';
+    cellContent.onblur = function() { localStorage.setItem(date + '-content', this.textContent); };
     cellTime.contentEditable = true;
     cellTime.classList.add('editable');
-    cellStatus.textContent = 'Klicken zum Markieren';
+    cellTime.textContent = localStorage.getItem(date + '-time') || '';
+    cellTime.onblur = function() { localStorage.setItem(date + '-time', this.textContent); };
+    cellStatus.textContent = localStorage.getItem(date + '-status') === 'true' ? 'Markiert' : 'Klicken zum Markieren';
+    cellStatus.classList.toggle('checked', localStorage.getItem(date + '-status') === 'true');
     cellStatus.onclick = function() { toggleCheck(this, date); };
-    if (localStorage.getItem(date) === 'true') {
-      cellStatus.classList.add('checked');
-      cellStatus.textContent = 'Markiert';
-    }
   }
 }
 
 function toggleCheck(cell, date) {
-  if (cell.classList.contains('checked')) {
-    cell.classList.remove('checked');
-    cell.textContent = 'Klicken zum Markieren';
-    localStorage.setItem(date, 'false');
-  } else {
-    cell.classList.add('checked');
-    cell.textContent = 'Markiert';
-    localStorage.setItem(date, 'true');
-  }
+  const isChecked = cell.classList.toggle('checked');
+  cell.textContent = isChecked ? 'Markiert' : 'Klicken zum Markieren';
+  localStorage.setItem(date + '-status', isChecked);
 }
 </script>
 </body>
