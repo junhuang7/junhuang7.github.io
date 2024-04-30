@@ -3,17 +3,18 @@
 <head>
   <title>Jun Huang</title>
   <link rel="icon" type="image/jpg" href="logo.png">
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  
   <style>
     :root {
-      --primary-color: #2c3e50;
-      --secondary-color: #3498db;
-      --background-color: #f5f5f5;
-      --text-color: #333;
+      --primary-color: #3349ec;  
+      --secondary-color: #7caeeb;
+      --background-color: #fff;
+      --text-color: #000;
       --link-color: var(--primary-color);
       --section-background: #fff;
-      --navbar-background: transparent;
+      --navbar-background: var(--background-color);
       --navbar-text-color: var(--text-color);
     }
 
@@ -22,12 +23,16 @@
       --text-color: #f5f5f5;
       --link-color: var(--secondary-color);
       --section-background: #2a2a2b;
-      --navbar-background: rgba(44, 62, 80, 0.8);
+      --navbar-background: var(--secondary-color);
       --navbar-text-color: #fff;
     }
 
+    [data-theme="dark"] #navbar a {
+      color: var(--text-color);
+    }
+
     body {
-      font-family: 'Raleway', sans-serif;
+      font-family: 'Open Sans', sans-serif;
       margin: 0;
       line-height: 1.6;
       background-color: var(--background-color);
@@ -37,16 +42,10 @@
     a {
       text-decoration: none;
       color: var(--link-color);
-      transition: color 0.3s ease;
-    }
-
-    a:hover {
-      color: var(--secondary-color);
     }
 
     h1, h2, h3 {
-      margin-bottom: 10px;
-      font-weight: 700;
+      margin-bottom: 10px; 
     }
 
     #navbar {
@@ -54,44 +53,50 @@
       top: 0;
       width: 100%;
       z-index: 1000;
-      background: var(--navbar-background);
+      background: var(--background-color);
       color: var(--navbar-text-color);
       padding: 1rem;
       display: flex;
-      justify-content: center;
+      justify-content: center; /* Center the navbar container */
       align-items: center;
-      transition: background-color 0.3s ease;
     }
 
     #nav-container {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: center; /* Center the contents */
     }
 
     #nav-container a {
-      margin: 0 15px;
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      transition: color 0.3s ease;
+      margin: 0 10px; /* Add some space between links */
     }
 
+    #navbar a {
+      color: var(--navbar-text-color);
+      margin: 0 1rem;
+      font-size: 15px;
+      font-weight: bold;
+    }
     #navbar a:hover {
-      color: var(--secondary-color);
+      color: #db4f69; /* Replace with the reddish color you want on hover */
     }
 
     #navbar a.active {
-      color: var(--secondary-color);
+      color: #4a90e2; /* Replace with the bluish color you want for the active link */
+    }
+
+    /* Ensure the color does not change on hover for the active link */
+    #navbar a.active:hover {
+      color: #4a90e2;
     }
 
     .section {
       max-width: 800px;
-      margin: 4rem auto;
+      margin: 2rem auto;  
       padding: 2rem;
       background: var(--section-background);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);  
+      border-radius: 5px;
     }
 
     #about img {
@@ -99,85 +104,79 @@
       width: 200px;
       margin-right: 20px;
       border-radius: 50%;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease;
-    }
-
-    #about img:hover {
-      transform: scale(1.05);
     }
 
     #theme-toggle {
-      margin-left: 20px;
+      margin-left: 20px; /* Add some space before the toggle switch */
     }
 
     #dark-mode-toggle {
-      display: none;
+      display: none; /* Hide the checkbox */
     }
 
     label {
       cursor: pointer;
-      width: 40px;
-      height: 40px;
+      width: 40px; /* Width of the toggle area */
+      height: 40px; /* Height of the toggle area */
       display: block;
       position: relative;
-      background: none;
+      background: none; /* Removing the background */
     }
 
     label i {
       color: var(--text-color);
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 10px; /* Adjust vertical position */
+      left: 10px; /* Adjust horizontal position */
       transition: opacity 0.3s;
     }
 
-    .bi-moon-fill, .bi-brightness-high-fill {
-      font-size: 20px;
+    .fa-moon, .fa-sun {
+      font-size: 20px; /* Adjust icon size */
     }
 
-    #dark-mode-toggle:checked + label .bi-moon-fill {
-      opacity: 0;
+    #dark-mode-toggle:checked + label .fa-moon {
+      opacity: 0; /* Hide the moon icon */
     }
 
-    #dark-mode-toggle:checked + label .bi-brightness-high-fill {
-      opacity: 1;
+    #dark-mode-toggle:checked + label .fa-sun {
+      opacity: 1; /* Show the sun icon */
     }
 
-    .bi-brightness-high-fill {
-      opacity: 0;
+    .fa-sun {
+      opacity: 0; /* Initially hide the sun icon */
     }
 
+    #dark-mode-toggle:checked {
+      transform: translateX(20px);
+    }
+
+    /* Default icon color (gray) */
     #contact a {
       display: inline-block;
       margin-right: 15px;
-      color: var(--text-color);
-      font-size: 30px;
-      transition: color 0.3s ease, transform 0.3s ease;
+      color: #808080; /* Gray color for icons */
+      font-size: 50px;
     }
 
-    #contact a:hover {
-      transform: scale(1.2);
+    #contact .fa-linkedin:hover {
+      color: #0A66C2; /* LinkedIn Blue */
     }
 
-    #contact .bi-linkedin:hover {
-      color: #0A66C2;
+    #contact .fa-github:hover {
+      color: #181717; /* GitHub Black */
     }
 
-    #contact .bi-github:hover {
-      color: #181717;
+    #contact .fa-instagram:hover {
+      color: #E1306C; /* Instagram Pink */
     }
 
-    #contact .bi-instagram:hover {
-      color: #E1306C;
+    #contact .fa-youtube:hover {
+      color: #FF0000; /* YouTube Red */
     }
 
-    #contact .bi-youtube:hover {
-      color: #FF0000;
-    }
-
-    #contact .bi-envelope-fill:hover {
-      color: #0072C6;
+    #contact .fa-envelope:hover {
+      color: #0072C6; /* Email Blue */
     }
 
     #contact i {
@@ -185,31 +184,26 @@
     }
 
     footer {
-      text-align: center;
-      padding: 20px;
-      background-color: var(--section-background);
-      color: var(--text-color);
-    }
+    text-align: center;
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--navbar-text-color);
+  }
 
     .clustrmaps-wrapper {
-      width: 600px;
-      height: 600px;
-      overflow: visible;
-      margin: 0 auto;
-      display: none;
-    }
+    width: 600px; /* Set the width you want */
+    height: 600px; /* Set the height you want */
+    overflow: visible; /* Hide the overflow */
+    margin: 0 auto; /* Centering horizontally */
+    display: none; /* Ensures it is a block-level element, which is necessary for margins to work */
+  }
 
-    @media (max-width: 768px) {
-      #about img {
-        float: none;
-        display: block;
-        margin: 0 auto 20px;
-      }
-    }
+
   </style>
 </head>
 
 <body>
+
   <div id="navbar">
     <div id="nav-container">
       <a href="index.html" class="active">About</a>
@@ -219,8 +213,8 @@
       <div id="theme-toggle">
         <input type="checkbox" id="dark-mode-toggle">
         <label for="dark-mode-toggle">
-          <i class="bi bi-brightness-high-fill"></i>
-          <i class="bi bi-moon-fill"></i>
+          <i class="fas fa-sun"></i>
+          <i class="fas fa-moon"></i>
         </label>
       </div>
     </div>
@@ -228,10 +222,12 @@
 
   <div id="about" class="section">
     <h1>Jun HUANG</h1>
-    <img src="jun.jpg" alt="Jun Huang">
+    <img src="jun.jpg">
     <p>I am a scientist passionate about AI and brain science. Currently working at University of Bern, analyzing neural data to understand intelligence.</p>
-    <p>I received my PhD from École Polytechnique Fédérale de Lausanne (EPFL) in Switzerland. My thesis focused on understanding the dopamine dynamics in reward-based learning.</p>
-    <p>In my free time, I enjoy hiking in the Alps, skiing, and photography.</p>
+
+    <p>I received my PhD from École Polytechnique Fédérale de Lausanne (EPFL) in Switzerland. My thesis focused on understanding the dopamine dynamics in reward-based learning. </p>
+
+    <p>In my free time I enjoy hiking in the Alps, skiing and photography.</p>
   </div>
 
   <div id="news" class="section">
