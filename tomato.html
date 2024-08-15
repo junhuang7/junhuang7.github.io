@@ -6,28 +6,31 @@
     <title>Tomato Timer</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
             font-size: 22px;
             text-align: center;
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #ff6347, #ff4500);
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: #fff;
         }
         #container {
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.2);
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
             max-width: 500px;
+        }
+        h1 {
+            margin-top: 0;
         }
         #timer {
             font-size: 6em;
-            color: #d63031;
+            color: #fff;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
             margin-top: 30px;
         }
@@ -40,26 +43,22 @@
             margin: 0 10px;
             border: none;
             border-radius: 5px;
-            background-color: #d63031;
+            background-color: rgba(255, 255, 255, 0.3);
             color: #fff;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.1s ease;
         }
         button:hover {
-            background-color: #c0392b;
+            background-color: rgba(255, 255, 255, 0.4);
         }
         button:active {
             transform: scale(0.95);
-        }
-        .tomato-icon {
-            font-size: 2em;
-            margin: 0 10px;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1><span class="tomato-icon">🍅</span>Tomato Timer<span class="tomato-icon">🍅</span></h1>
+        <h1>🍅 Tomato Timer 🍅</h1>
         <div id="timer">25:00</div>
         <div id="controls">
             <button onclick="startTimer()">Start</button>
