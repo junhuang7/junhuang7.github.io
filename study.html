@@ -44,12 +44,7 @@
             aspect-ratio: 1;
             border-radius: 4px;
             background-color: #eee;
-            cursor: pointer;
             transition: transform 0.2s;
-        }
-
-        .day-cell:hover {
-            transform: scale(1.1);
         }
 
         .studied {
@@ -82,23 +77,14 @@
             height: 300px;
         }
 
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .study-grid {
+                grid-template-columns: repeat(15, 1fr);
+            }
         }
     </style>
 </head>
@@ -108,7 +94,7 @@
 
         <div class="subject-section">
             <h2>German</h2>
-            <div class="study-grid" id="germanGrid"></div>
+            <div class="study-grid" id="deutschGrid"></div>
         </div>
 
         <div class="subject-section">
@@ -119,15 +105,15 @@
         <div class="stats">
             <div class="stat-card">
                 <h3>German Statistics</h3>
-                <div class="streak-indicator" id="germanStreak">🔥 5 days</div>
-                <p>Study Rate: <span id="germanRate">75%</span></p>
-                <p>Total Days: <span id="germanTotal">22/30</span></p>
+                <div class="streak-indicator" id="germanStreak">🔥 0 days</div>
+                <p>Study Rate: <span id="germanRate">0%</span></p>
+                <p>Total Days: <span id="germanTotal">0/30</span></p>
             </div>
             <div class="stat-card">
                 <h3>Machine Learning Statistics</h3>
-                <div class="streak-indicator" id="mlStreak">🔥 3 days</div>
-                <p>Study Rate: <span id="mlRate">60%</span></p>
-                <p>Total Days: <span id="mlTotal">18/30</span></p>
+                <div class="streak-indicator" id="mlStreak">🔥 0 days</div>
+                <p>Study Rate: <span id="mlRate">0%</span></p>
+                <p>Total Days: <span id="mlTotal">0/30</span></p>
             </div>
         </div>
 
@@ -137,10 +123,41 @@
     </div>
 
     <script>
-        // Initialize study data from localStorage or create new
-        let studyData = JSON.parse(localStorage.getItem('studyData')) || {
-            german: {},
-            ml: {}
+        // ============= DAILY PUNCH IN ZONE =============
+        // Change these variables to 1 and commit to mark today's study
+        const DEUTSCH_TODAY = 0;  // Set to 1 if you studied German today
+        const ML_TODAY = 0;       // Set to 1 if you studied ML today
+        // =============================================
+
+        // Study history data structure
+        const studyHistory = {
+            deutsch: {
+                // Format: 'YYYY-MM-DD': 1 or 0
+                '2024-11-16': DEUTSCH_TODAY,
+                '2024-11-15': 1,
+                '2024-11-14': 1,
+                '2024-11-13': 0,
+                '2024-11-12': 1,
+                '2024-11-11': 0,
+                '2024-11-10': 1,
+                '2024-11-09': 1,
+                '2024-11-08': 0,
+                '2024-11-07': 1,
+                // Add more history as needed
+            },
+            ml: {
+                '2024-11-16': ML_TODAY,
+                '2024-11-15': 1,
+                '2024-11-14': 0,
+                '2024-11-13': 1,
+                '2024-11-12': 1,
+                '2024-11-11': 1,
+                '2024-11-10': 0,
+                '2024-11-09': 1,
+                '2024-11-08': 1,
+                '2024-11-07': 0,
+                // Add more history as needed
+            }
         };
 
         function createGrid(subject) {
@@ -153,25 +170,17 @@
                 const dateStr = date.toISOString().split('T')[0];
                 
                 const cell = document.createElement('div');
-                cell.className = `day-cell ${studyData[subject][dateStr] ? 'studied' : ''}`;
+                const studied = studyHistory[subject][dateStr] === 1;
+                cell.className = `day-cell ${studied ? 'studied' : ''}`;
                 cell.title = dateStr;
-                
-                cell.onclick = () => toggleStudy(subject, dateStr, cell);
                 grid.appendChild(cell);
             }
         }
 
-        function toggleStudy(subject, date, cell) {
-            studyData[subject][date] = !studyData[subject][date];
-            cell.classList.toggle('studied');
-            localStorage.setItem('studyData', JSON.stringify(studyData));
-            updateStats();
-            updateChart();
-        }
-
         function updateStats() {
-            for (const subject of ['german', 'ml']) {
-                const total = Object.values(studyData[subject]).filter(x => x).length;
+            for (const subject of ['deutsch', 'ml']) {
+                const data = studyHistory[subject];
+                const total = Object.values(data).filter(x => x === 1).length;
                 const rate = ((total / 30) * 100).toFixed(1);
                 
                 let streak = 0;
@@ -181,7 +190,7 @@
                     date.setDate(date.getDate() - i);
                     const dateStr = date.toISOString().split('T')[0];
                     
-                    if (studyData[subject][dateStr]) {
+                    if (data[dateStr] === 1) {
                         currentStreak++;
                         streak = Math.max(streak, currentStreak);
                     } else {
@@ -189,9 +198,10 @@
                     }
                 }
 
-                document.getElementById(`${subject}Streak`).textContent = `🔥 ${streak} days`;
-                document.getElementById(`${subject}Rate`).textContent = `${rate}%`;
-                document.getElementById(`${subject}Total`).textContent = `${total}/30`;
+                const displaySubject = subject === 'deutsch' ? 'german' : 'ml';
+                document.getElementById(`${displaySubject}Streak`).textContent = `🔥 ${streak} days`;
+                document.getElementById(`${displaySubject}Rate`).textContent = `${rate}%`;
+                document.getElementById(`${displaySubject}Total`).textContent = `${total}/30`;
             }
         }
 
@@ -203,14 +213,14 @@
                 return d.toLocaleDateString();
             });
 
-            const germanData = labels.map(date => {
+            const deutschData = labels.map(date => {
                 const dateStr = new Date(date).toISOString().split('T')[0];
-                return studyData.german[dateStr] ? 1 : 0;
+                return studyHistory.deutsch[dateStr] || 0;
             });
 
             const mlData = labels.map(date => {
                 const dateStr = new Date(date).toISOString().split('T')[0];
-                return studyData.ml[dateStr] ? 1 : 0;
+                return studyHistory.ml[dateStr] || 0;
             });
 
             new Chart(ctx, {
@@ -220,7 +230,7 @@
                     datasets: [
                         {
                             label: 'German',
-                            data: germanData,
+                            data: deutschData,
                             borderColor: '#4CAF50',
                             backgroundColor: 'rgba(76, 175, 80, 0.1)',
                             fill: true
@@ -248,7 +258,7 @@
         }
 
         // Initialize the page
-        createGrid('german');
+        createGrid('deutsch');
         createGrid('ml');
         updateStats();
         updateChart();
