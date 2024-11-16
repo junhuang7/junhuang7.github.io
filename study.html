@@ -1,0 +1,140 @@
+import React, { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Calendar, Brain, Languages } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+
+const START_DATE = new Date('2024-11-16');
+
+const StudyTracker = () => {
+  const [studyData, setStudyData] = useState(() => {
+    const saved = localStorage.getItem('studyData');
+    return saved ? JSON.parse(saved) : [];
+  });
+  
+  const [today, setToday] = useState({
+    date: new Date().toISOString().split('T')[0],
+    german: false,
+    ml: false
+  });
+
+  useEffect(() => {
+    localStorage.setItem('studyData', JSON.stringify(studyData));
+  }, [studyData]);
+
+  const totalDays = Math.floor((new Date() - START_DATE) / (1000 * 60 * 60 * 24));
+  const totalStudiedGerman = studyData.filter(d => d.german).length;
+  const totalStudiedML = studyData.filter(d => d.ml).length;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const existingIndex = studyData.findIndex(d => d.date === today.date);
+    
+    if (existingIndex >= 0) {
+      const newData = [...studyData];
+      newData[existingIndex] = today;
+      setStudyData(newData);
+    } else {
+      setStudyData([...studyData, today]);
+    }
+  };
+
+  const last7Days = [...Array(7)].map((_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    return date.toISOString().split('T')[0];
+  }).reverse();
+
+  const chartData = last7Days.map(date => {
+    const entry = studyData.find(d => d.date === date) || { german: false, ml: false };
+    return {
+      date: date.split('-').slice(1).join('/'),
+      German: entry.german ? 1 : 0,
+      ML: entry.ml ? 1 : 0
+    };
+  });
+
+  return (
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center">
+            Jun's Study Attitude Monitor
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="bg-blue-100 p-4 rounded-lg text-center">
+              <Calendar className="inline-block mb-2" />
+              <p className="text-lg font-semibold">Total Days</p>
+              <p className="text-2xl font-bold text-blue-600">{totalDays}</p>
+            </div>
+            <div className="bg-green-100 p-4 rounded-lg text-center">
+              <Languages className="inline-block mb-2" />
+              <p className="text-lg font-semibold">German Study Days</p>
+              <p className="text-2xl font-bold text-green-600">{totalStudiedGerman}</p>
+            </div>
+            <div className="bg-purple-100 p-4 rounded-lg text-center">
+              <Brain className="inline-block mb-2" />
+              <p className="text-lg font-semibold">ML Study Days</p>
+              <p className="text-2xl font-bold text-purple-600">{totalStudiedML}</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="mb-6">
+            <div className="flex flex-col md:flex-row gap-4 items-end">
+              <div className="flex-1">
+                <label className="block text-sm font-medium mb-1">Date</label>
+                <input
+                  type="date"
+                  value={today.date}
+                  onChange={e => setToday({ ...today, date: e.target.value })}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div className="flex gap-4">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={today.german}
+                    onChange={e => setToday({ ...today, german: e.target.checked })}
+                    className="w-4 h-4"
+                  />
+                  <span>German</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={today.ml}
+                    onChange={e => setToday({ ...today, ml: e.target.checked })}
+                    className="w-4 h-4"
+                  />
+                  <span>Machine Learning</span>
+                </label>
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData}>
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="German" fill="#22c55e" />
+                <Bar dataKey="ML" fill="#a855f7" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default StudyTracker;
