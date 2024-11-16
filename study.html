@@ -1,140 +1,329 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Calendar, Brain, Languages } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jun's Study Attitude Monitor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --german-color: #22c55e;
+            --ml-color: #a855f7;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f3f4f6;
+        }
 
-const START_DATE = new Date('2024-11-16');
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-const StudyTracker = () => {
-  const [studyData, setStudyData] = useState(() => {
-    const saved = localStorage.getItem('studyData');
-    return saved ? JSON.parse(saved) : [];
-  });
-  
-  const [today, setToday] = useState({
-    date: new Date().toISOString().split('T')[0],
-    german: false,
-    ml: false
-  });
+        h1 {
+            text-align: center;
+            color: #1f2937;
+        }
 
-  useEffect(() => {
-    localStorage.setItem('studyData', JSON.stringify(studyData));
-  }, [studyData]);
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
 
-  const totalDays = Math.floor((new Date() - START_DATE) / (1000 * 60 * 60 * 24));
-  const totalStudiedGerman = studyData.filter(d => d.german).length;
-  const totalStudiedML = studyData.filter(d => d.ml).length;
+        .stat-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const existingIndex = studyData.findIndex(d => d.date === today.date);
-    
-    if (existingIndex >= 0) {
-      const newData = [...studyData];
-      newData[existingIndex] = today;
-      setStudyData(newData);
-    } else {
-      setStudyData([...studyData, today]);
-    }
-  };
+        .stat-card.total {
+            background-color: #dbeafe;
+        }
 
-  const last7Days = [...Array(7)].map((_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    return date.toISOString().split('T')[0];
-  }).reverse();
+        .stat-card.german {
+            background-color: #dcfce7;
+        }
 
-  const chartData = last7Days.map(date => {
-    const entry = studyData.find(d => d.date === date) || { german: false, ml: false };
-    return {
-      date: date.split('-').slice(1).join('/'),
-      German: entry.german ? 1 : 0,
-      ML: entry.ml ? 1 : 0
-    };
-  });
+        .stat-card.ml {
+            background-color: #f3e8ff;
+        }
 
-  return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">
-            Jun's Study Attitude Monitor
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-blue-100 p-4 rounded-lg text-center">
-              <Calendar className="inline-block mb-2" />
-              <p className="text-lg font-semibold">Total Days</p>
-              <p className="text-2xl font-bold text-blue-600">{totalDays}</p>
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .input-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+            height: 300px;
+        }
+
+        .export-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Jun's Study Attitude Monitor</h1>
+        
+        <div class="stats-container">
+            <div class="stat-card total">
+                <h3>Total Days</h3>
+                <div class="stat-value" id="totalDays">0</div>
+                <div>Since Nov 16, 2024</div>
             </div>
-            <div className="bg-green-100 p-4 rounded-lg text-center">
-              <Languages className="inline-block mb-2" />
-              <p className="text-lg font-semibold">German Study Days</p>
-              <p className="text-2xl font-bold text-green-600">{totalStudiedGerman}</p>
+            <div class="stat-card german">
+                <h3>German Study Days</h3>
+                <div class="stat-value" id="germanDays">0</div>
+                <div>Total Sessions</div>
             </div>
-            <div className="bg-purple-100 p-4 rounded-lg text-center">
-              <Brain className="inline-block mb-2" />
-              <p className="text-lg font-semibold">ML Study Days</p>
-              <p className="text-2xl font-bold text-purple-600">{totalStudiedML}</p>
+            <div class="stat-card ml">
+                <h3>ML Study Days</h3>
+                <div class="stat-value" id="mlDays">0</div>
+                <div>Total Sessions</div>
             </div>
-          </div>
+        </div>
 
-          <form onSubmit={handleSubmit} className="mb-6">
-            <div className="flex flex-col md:flex-row gap-4 items-end">
-              <div className="flex-1">
-                <label className="block text-sm font-medium mb-1">Date</label>
-                <input
-                  type="date"
-                  value={today.date}
-                  onChange={e => setToday({ ...today, date: e.target.value })}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-              <div className="flex gap-4">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={today.german}
-                    onChange={e => setToday({ ...today, german: e.target.checked })}
-                    className="w-4 h-4"
-                  />
-                  <span>German</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={today.ml}
-                    onChange={e => setToday({ ...today, ml: e.target.checked })}
-                    className="w-4 h-4"
-                  />
-                  <span>Machine Learning</span>
-                </label>
-              </div>
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
-                Save
-              </button>
+        <div class="input-form">
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="studyDate">Date:</label>
+                    <input type="date" id="studyDate">
+                </div>
+                <div class="input-group">
+                    <input type="checkbox" id="germanCheck">
+                    <label for="germanCheck">German</label>
+                </div>
+                <div class="input-group">
+                    <input type="checkbox" id="mlCheck">
+                    <label for="mlCheck">Machine Learning</label>
+                </div>
+                <button onclick="saveEntry()">Save Entry</button>
             </div>
-          </form>
+        </div>
 
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="German" fill="#22c55e" />
-                <Bar dataKey="ML" fill="#a855f7" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+        <div class="chart-container">
+            <canvas id="studyChart"></canvas>
+        </div>
+
+        <div class="export-section">
+            <button onclick="exportData()">Export Data</button>
+            <button onclick="importData()">Import Data</button>
+            <input type="file" id="importFile" style="display: none" onchange="handleImport(event)">
+        </div>
     </div>
-  );
-};
 
-export default StudyTracker;
+    <script>
+        // Constants
+        const START_DATE = new Date('2024-11-16');
+        let studyData = [];
+
+        // Initialize
+        function init() {
+            loadData();
+            updateStats();
+            updateChart();
+            document.getElementById('studyDate').valueAsDate = new Date();
+        }
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('studyData');
+            studyData = saved ? JSON.parse(saved) : [];
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('studyData', JSON.stringify(studyData));
+        }
+
+        // Update statistics
+        function updateStats() {
+            const today = new Date();
+            const totalDays = Math.floor((today - START_DATE) / (1000 * 60 * 60 * 24));
+            const germanDays = studyData.filter(d => d.german).length;
+            const mlDays = studyData.filter(d => d.ml).length;
+
+            document.getElementById('totalDays').textContent = totalDays;
+            document.getElementById('germanDays').textContent = germanDays;
+            document.getElementById('mlDays').textContent = mlDays;
+        }
+
+        // Save new entry
+        function saveEntry() {
+            const date = document.getElementById('studyDate').value;
+            const german = document.getElementById('germanCheck').checked;
+            const ml = document.getElementById('mlCheck').checked;
+
+            const existingIndex = studyData.findIndex(d => d.date === date);
+            if (existingIndex >= 0) {
+                studyData[existingIndex] = { date, german, ml };
+            } else {
+                studyData.push({ date, german, ml });
+            }
+
+            saveData();
+            updateStats();
+            updateChart();
+
+            // Reset checkboxes
+            document.getElementById('germanCheck').checked = false;
+            document.getElementById('mlCheck').checked = false;
+        }
+
+        // Update chart
+        function updateChart() {
+            const ctx = document.getElementById('studyChart').getContext('2d');
+            
+            // Get last 7 days
+            const last7Days = [...Array(7)].map((_, i) => {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                return date.toISOString().split('T')[0];
+            }).reverse();
+
+            const chartData = last7Days.map(date => {
+                const entry = studyData.find(d => d.date === date) || { german: false, ml: false };
+                return {
+                    date: date.split('-').slice(1).join('/'),
+                    german: entry.german ? 1 : 0,
+                    ml: entry.ml ? 1 : 0
+                };
+            });
+
+            if (window.studyChart) {
+                window.studyChart.destroy();
+            }
+
+            window.studyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.map(d => d.date),
+                    datasets: [
+                        {
+                            label: 'German',
+                            data: chartData.map(d => d.german),
+                            backgroundColor: '#22c55e'
+                        },
+                        {
+                            label: 'Machine Learning',
+                            data: chartData.map(d => d.ml),
+                            backgroundColor: '#a855f7'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1
+                        }
+                    }
+                }
+            });
+        }
+
+        // Export data
+        function exportData() {
+            const dataStr = JSON.stringify(studyData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'study_data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Import data
+        function importData() {
+            document.getElementById('importFile').click();
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        studyData = JSON.parse(e.target.result);
+                        saveData();
+                        updateStats();
+                        updateChart();
+                    } catch (error) {
+                        alert('Error importing data. Please check the file format.');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
