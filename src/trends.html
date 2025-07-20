@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<title>Health Trends</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+<header>
+  <h1>健康趋势</h1>
+  <button class="profile-btn">👤</button>
+</header>
+
+<main>
+  <p class="hint">您的 HbA1c、BMI 显现上升趋势，请查看健康建议。</p>
+
+  <article class="card">
+    <div class="card-head">
+      <h2>HbA1c<br><small>(血糖相关)</small></h2>
+      <span class="value">5.8%</span>
+    </div>
+    <div class="tag warn">正常范围<br>上升趋势</div>
+    <canvas class="spark" data-source="a1c"></canvas>
+    <a class="detail-link" href="#">查看详细趋势</a>
+  </article>
+
+  <article class="card">
+    <div class="card-head">
+      <h2>血压</h2>
+      <span class="value">115/70</span>
+    </div>
+    <div class="tag ok">正常范围<br>趋势平稳</div>
+    <canvas class="spark" data-source="bp"></canvas>
+    <a class="detail-link" href="#">查看详细趋势</a>
+  </article>
+
+  <article class="card">
+    <div class="card-head">
+      <h2>BMI<br><small>(体重相关)</small></h2>
+      <span class="value">27</span>
+    </div>
+    <div class="tag alert">异常范围<br>上升趋势</div>
+    <canvas class="spark" data-source="bmi"></canvas>
+    <a class="detail-link" href="#">查看详细趋势</a>
+  </article>
+
+  <button class="more-btn">更多趋势</button>
+</main>
+
+<nav class="bottom-nav">
+  <a href="upload.html" class="nav-item">上传数据</a>
+  <a href="trends.html" class="nav-item active">健康趋势</a>
+</nav>
+
+<script src="chart.min.js"></script>
+<script src="scripts.js"></script>
+</body>
+</html>

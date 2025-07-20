@@ -1,0 +1,34 @@
+/* Reset & variables */
+:root{
+  --bg:#fafafa; --primary:#007aff; --ok:#4caf50; --warn:#ffc107; --alert:#f44336;
+  --radius:12px; --shadow:0 2px 8px rgba(0,0,0,.08);
+  font-size:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+body{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;}
+header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;background:#fff;box-shadow:var(--shadow);}
+h1{font-size:1.2rem;}
+.back-btn,.profile-btn{font-size:1.5rem;background:none;border:none;}
+main{flex:1;padding:1rem;overflow-y:auto;}
+.hero{display:flex;justify-content:center;margin-bottom:1rem;}
+.hero-img{font-size:5rem;}
+.action-list{display:grid;gap:0.75rem;}
+.action-btn{display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:#fff;border:none;padding:1rem;border-radius:var(--radius);box-shadow:var(--shadow);}
+.action-btn .icon{font-size:1.3rem;margin-right:0.6rem;}
+
+.hint{margin-bottom:1rem;color:#666;font-size:0.9rem;}
+
+.card{background:#fff;border-radius:var(--radius);padding:1rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;}
+.card-head h2{font-size:1rem;}
+.card-head small{font-size:0.7rem;color:#555;}
+.value{font-size:1.2rem;font-weight:bold;}
+.tag{display:inline-block;border-radius:8px;padding:0.2rem 0.4rem;font-size:0.7rem;color:#fff;margin-bottom:0.6rem;}
+.tag.ok{background:var(--ok);} .tag.warn{background:var(--warn);} .tag.alert{background:var(--alert);}
+.spark{width:100%;height:48px;}
+.detail-link{display:block;text-align:right;font-size:0.8rem;color:var(--primary);margin-top:0.4rem;}
+.more-btn{width:100%;padding:0.9rem;font-size:1rem;border:none;border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);margin-bottom:1.5rem;}
+
+.bottom-nav{display:flex;justify-content:space-around;padding:0.5rem 0;background:#fff;box-shadow:var(--shadow);}
+.nav-item{flex:1;text-align:center;font-size:0.8rem;color:#444;text-decoration:none;padding:0.3rem 0;}
+.nav-item.active{color:var(--primary);font-weight:600;}
