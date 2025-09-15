@@ -5392,13 +5392,27 @@ document.addEventListener("DOMContentLoaded", function() {
       el.insertAdjacentElement('afterend', panel);
     }
 
-    // Fill content
-    const textEl = panel.querySelector('.text');
-    const metaEl = panel.querySelector('.cns-meta');
-    textEl.innerHTML = (rec.text || '').replace(/\\n/g,'<br>');
-    if(rec.url){
-      metaEl.innerHTML = `<a href="${rec.url}" target="_blank" rel="noopener">Open original PDF</a>`;
-    }
+// Fill content
+const textEl = panel.querySelector('.text');
+const metaEl = panel.querySelector('.cns-meta');
+
+// Replace line breaks
+textEl.innerHTML = (rec.text || '').replace(/\\n/g, '<br>');
+
+// Add link if URL exists
+if (rec.url) {
+  let url = rec.url.trim();
+
+  // Normalize to HTTPS
+  if (url.startsWith("//")) {
+    url = "https:" + url;
+  } else if (url.startsWith("http://")) {
+    url = url.replace("http://", "https://");
+  }
+
+  metaEl.innerHTML = `<a href="${url}" target="_blank" rel="noopener">Open original PDF</a>`;
+}
+
 
     // Toggle visibility (block = full width)
     el.addEventListener('click', () => {
