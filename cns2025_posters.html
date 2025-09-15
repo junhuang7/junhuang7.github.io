@@ -5524,10 +5524,13 @@ if (rec.url) {
         const metaEl = panelEl.querySelector('.cns-meta');
         if (rec.url) {
           const a = document.createElement('a');
-          a.href = rec.url; a.target = '_blank'; a.rel = 'noopener';
+          a.href = rec.url;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer'; // prevents referer from being sent
           a.textContent = 'Open original PDF';
           metaEl.appendChild(a);
         }
+
       }
     }
 
