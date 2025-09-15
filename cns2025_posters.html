@@ -29,6 +29,33 @@
             color: #195197;
         }
     </style>
+
+<style>
+/* Force abstracts to display */
+.cns-abs-panel {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+    opacity: 1 !important;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    function unfold() {
+        document.querySelectorAll(".collapse").forEach(el => {
+            el.classList.add("show");
+            el.style.display = "block";
+        });
+        document.querySelectorAll(".cns-abs-panel").forEach(el => {
+            el.style.display = "block";
+        });
+    }
+    unfold();
+    setTimeout(unfold, 1000);
+    setTimeout(unfold, 3000);
+});
+</script>
+
 </head>
 <body>
 <a id="idTop"></a>
@@ -40,7 +67,34 @@
 <button aria-controls="navbars" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" style="" type="button">
 <span class="navbar-toggler-icon"></span>
 </button>
+<div class="collapse navbar-collapse" id="navbar">
+<ul class="navbar-nav mr-auto">
+<li class="nav-item px-3"><a class="nav-link text-dark" href="cn-index.html"><b>首页</b></a></li>
+<li class="nav-item dropdown megamenu-li px-3">
+<a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown" href="" id="dropdown01"><span class="text-dark"><b>CNS2025</b></span></a>
 
+</li>
+</ul>
+<a class="btn navbar-btn ml-md-2 btn-secondary" href="index.html"><b>English</b></a>
+</div>
+</div>
+</nav>
+<div class="text-center">
+<div class="container-fluid">
+<div class="row">
+</div>
+</div>
+</div><div class="d-none d-md-block">
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12 text-center bg-light">
+<ul class="nav text-center">
+<li><a href="cn-program-outline.html"><b>会议简表</b></a></li>
+<li><a href="cn-plenary-lectures.html"><b>大会报告</b></a></li>
+<li><a href="cn-scientific-program.html"><b>详细日程</b></a></li>
+<li><a href="cn-forum-workshop.html"><b>专场论坛</b></a></li>
+<li><a href="cn-poster-sessions.html" style="background: linear-gradient(#f0dc90, #927241); text-shadow: 0 1px 0 #000; color: white"><b>墙报交流</b></a></li>
+<li><a href=""><b style="color:#999;">专题征集</b></a></li>
 </ul>
 </div>
 </div>
@@ -48,7 +102,7 @@
 </div><div class="container pt-4">
 <div class="row">
 <div class="col">
-<h2 class="text-center pt-2"><strong>CNS 2025 Posters</strong></h2>
+<h2 class="text-center pt-2"><strong>墙报交流</strong></h2>
 </div>
 </div>
 <div class="py-3 row">
@@ -5211,12 +5265,58 @@
 </div>
 </div>
 </div>
-
+<div class="d-none d-md-block contact text-center py-2">
+<p class="text-left pl-3 text-info">
+<text class="text-white"><i aria-hidden="true" class="fa fa-address-book-o"></i> Quick Link</text>
+</p>
+<div class="table-responsive px-3">
+<table class="table table-borderless table-sm">
+<tbody>
+<tr class="table-primary">
+<td class="text-left px-3"><a href="#p1"><strong>Poster Session I</strong></a></td>
+</tr>
+<tr class="table-danger">
+<td class="text-left px-3"><a href="#p2"><strong>Poster Session II</strong></a></td>
+</tr>
+<tr class="table-success">
+<td class="text-left px-3"><a href="#p3"><strong>Poster Session III</strong></a></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-
-<p class="text-white text-left pt-2">Copyright © 中国神经科学学会 版权所有 (Content)</p>
-<p class="text-white text-left pt-2">Copyright © Jun Huang (Searchable html code)</p>
+<div class="text-white bg-primary" style="">
+<div class="container">
+<div class="row">
+<div class="col-md-12 py-5" style="">
+<div class="row">
+<div class="col-md-12" style="">
+<div class="row">
+<div class="col-md-6">
+<h4 class="text-white pb-3" style="">大会秘书处</h4>
+</div>
+<div class="col-md-6"></div>
+</div>
+<div class="row">
+<div class="col-md-6">
+<div class="row">
+<div class="col-md-12 col-12">
+<p class="">地址：上海市徐汇区肇嘉浜路789号均瑶国际广场12楼B1（200032）</p>
+<p class="">学术报告：李　超，lichao@cns.org.cn，021-64081037 <br/>注册交费：杨丽丽，treasurer@cns.org.cn，021-64081050 <br/>评奖事项：张继慧，zhangjihui@cns.org.cn，021-64081037 <br/>网站系统：王娜娜，wangnana@cns.org.cn，021-64081036 <br/>
+                                            参展事宜：张继慧，zhangjihui@cns.org.cn，021-64081037<br/>住宿酒店：王　斌，annualmeeting@163.com，13381695656</p>
+</div>
+</div>
+</div>
+<div class="col-md-2 col-6">
+<img class="img-fluid d-block pb-1" src="images/er01.png"/>
+<p class="text-center">官方学会微信</p>
+</div>
+<div class="col-md-2 col-6">
+<img class="img-fluid d-block pb-1" src="images/er02.png"/>
+<p class="text-center">官方科普微信</p>
+</div>
+</div>
+<p class="text-white text-left pt-2">Copyright © 中国神经科学学会 版权所有</p>
 </div>
 </div>
 </div>
@@ -5302,8 +5402,8 @@
   candidates.forEach(el => {
     const titleText = el.getAttribute('data-title') || el.textContent;
     const key = norm(titleText);
-    if(!dataMap.has(key)) return;
-    const rec = dataMap.get(key);
+    if(!map.has(key)) return;
+    const rec = map.get(key);
 
     // Make clickable and prevent navigation
     el.classList.add('cns-hit');
@@ -5487,7 +5587,7 @@
   const bar = document.createElement('div');
   bar.className = 'cns-topbar';
   bar.innerHTML = `
-    <strong>Search</strong>
+    <strong>CNS Posters — Enhanced Search</strong>
     <input id="cns-q" type="search" placeholder="Search titles and abstracts… (quotes for phrases)" autocomplete="off">
     <button class="cns-clear" id="cns-clear" type="button" title="Clear">Clear</button>
     <div class="cns-count" id="cns-count"></div>
