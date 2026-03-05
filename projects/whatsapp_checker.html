@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Number Checker</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; padding: 20px; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
+        button { background: #25D366; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #128C7E; }
+        #result { margin-top: 20px; padding: 10px; border-radius: 5px; font-weight: bold; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>WhatsApp Number Checker</h1>
+    <p>Paste a phone number (e.g., +41 23 456 7890) and click Check.</p>
+    <input type="text" id="phoneInput" placeholder="Enter phone number" />
+    <br>
+    <button onclick="checkWhatsApp()">Check on WhatsApp</button>
+    <div id="result"></div>
+    <script>
+        function checkWhatsApp() {
+            const phone = document.getElementById('phoneInput').value.trim();
+            if (!phone) {
+                showResult('Please enter a phone number.', 'error');
+                return;
+            }
+            // Remove all non-digits
+            let normalized = phone.replace(/[^0-9]/g, '');
+            // Assume international: if starts with country code like 41, keep as-is; wa.me expects country code + number without +
+            const url = `https://wa.me/${normalized}`;
+            showResult(`Opening WhatsApp for ${phone}...`, 'warning');
+            window.open(url, '_blank');
+        }
+        function showResult(msg, className) {
+            const result = document.getElementById('result');
+            result.textContent = msg;
+            result.className = className;
+        }
+    </script>
+</body>
+</html>
