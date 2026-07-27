@@ -365,9 +365,21 @@
 
   </div> <footer>
     <div class="container">
-      <div class="clustrmaps-wrapper">
-        <script type="text/javascript" id="mapmyvisitors" src="//mapmyvisitors.com/map.js?d=iOxJ-dxUPwtZSaHIFA2r-f063TQnNJRzOLXfadFL9io&cl=ffffff&w=a"></script>
-      </div>
+      <div class="clustrmaps-wrapper" id="visitor-map"></div>
+      <script>
+        window.addEventListener('load', function() {
+          setTimeout(function() {
+            var container = document.getElementById('visitor-map');
+            if (!container) return;
+            var scriptMap = document.createElement('script');
+            scriptMap.type = 'text/javascript';
+            scriptMap.id = 'mapmyvisitors';
+            scriptMap.src = "https://mapmyvisitors.com/map.js?d=iOxJ-dxUPwtZSaHIFA2r-f063TQnNJRzOLXfadFL9io&cl=ffffff&w=a";
+            scriptMap.async = true;
+            container.appendChild(scriptMap);
+          }, 300);
+        });
+      </script>
       <p>
         &copy; <span id="year"></span> Jun HUANG. <br>
         Today is: <span id="date"></span>
