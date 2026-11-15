@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NutriMood Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700&family=Martian+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a kitchen-scale worktop. One loud element (the body-shaped progress bar),
+   quiet ruled sections around it, every number set like a scale readout. */
+:root{
+  --paper:#eef1ec; --surface:#fbfcf9; --ink:#15173a; --muted:#5a5e78; --line:#d3d8d0;
+  --accent:#2f4fd8; --on-accent:#ffffff;
+  --carb:#2b2a72; --prot:#b65a55; --fat:#f0a232; --empty:#c8cdd2;
+  --display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Martian Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e0f22; --surface:#17193a; --ink:#eceefb; --muted:#a3a7c6; --line:#2b2e56;
+    --accent:#8198ff; --on-accent:#0e0f22;
+    --carb:#7479ea; --prot:#dc857f; --fat:#f5b452; --empty:#353862;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e0f22; --surface:#17193a; --ink:#eceefb; --muted:#a3a7c6; --line:#2b2e56;
+  --accent:#8198ff; --on-accent:#0e0f22;
+  --carb:#7479ea; --prot:#dc857f; --fat:#f5b452; --empty:#353862;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.02;letter-spacing:-.02em}
+h2{font-size:clamp(2rem,5vw,3.4rem);font-weight:750}
+h3{font-size:1.35rem;font-weight:700;line-height:1.15}
+p{margin:0;max-width:65ch}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:20px;min-height:54px}
+.brand{font-family:var(--display);font-weight:800;font-size:1.15rem;letter-spacing:-.02em}
+.brand i{font-style:normal;color:var(--accent)}
+.nav nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.nav a{color:var(--muted);text-decoration:none;font-size:.86rem;font-weight:600;padding:6px 10px;border-radius:999px;white-space:nowrap}
+.nav a:hover,.nav a.on{color:var(--ink);background:var(--surface)}
+
+/* hero */
+.hero{padding:clamp(28px,5vw,64px) 0 clamp(36px,6vw,72px)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(24px,4vw,56px);align-items:center}
+.eyebrow{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+h1{font-size:clamp(3.4rem,7.2vw,5.6rem);font-weight:800;letter-spacing:-.05em;line-height:.86;margin:14px 0 20px}
+h1 span{color:var(--accent)}
+.lede{font-size:clamp(1.1rem,1.8vw,1.32rem);line-height:1.4;max-width:34ch}
+.facts{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+.fact b{display:block;font-family:var(--mono);font-size:1.5rem;font-weight:600;letter-spacing:-.04em}
+.fact span{font-size:.82rem;color:var(--muted)}
+
+/* demo */
+.demo{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:0 30px 60px -40px color-mix(in srgb,var(--ink) 50%,transparent)}
+.demo-top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 4px 12px}
+.demo-top .mono{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.linkbtn{background:none;border:0;padding:4px 6px;color:var(--accent);font-weight:600;font-size:.85rem;border-radius:6px}
+.demo-body{display:grid;grid-template-columns:minmax(150px,200px) minmax(0,1fr);gap:16px}
+.gauge{background:var(--paper);border-radius:18px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.gauge svg{width:100%;max-width:150px;height:auto}
+.pct{font-family:var(--mono);font-weight:600;font-size:15px;fill:#fff;paint-order:stroke;stroke:rgba(10,10,40,.55);stroke-width:3px}
+.readout{width:100%;display:grid;gap:4px;font-size:.8rem}
+.readout div{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.readout .k{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.sw{width:9px;height:9px;border-radius:2px;display:inline-block;flex:none}
+.readout .kcal{font-size:1rem;border-bottom:1px solid var(--line);padding-bottom:5px;margin-bottom:2px}
+.readout .kcal .mono{font-weight:600}
+.chat{display:flex;flex-direction:column;min-height:420px;max-height:470px}
+.log{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 2px 10px}
+.msg{max-width:92%;font-size:.93rem;line-height:1.4;animation:pop .28s ease-out}
+.msg.bot{align-self:flex-start}
+.msg.me{align-self:flex-end;background:var(--paper);border:1px solid var(--line);padding:8px 12px;border-radius:14px 14px 4px 14px}
+@keyframes pop{from{transform:translateY(6px);opacity:.3}to{transform:none;opacity:1}}
+.meals{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-self:stretch}
+.meal{border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px;background:var(--paper)}
+.meal h4{margin:0;font-family:var(--display);font-size:1rem;line-height:1.1}
+.meal ul{list-style:none;margin:0;padding:0;font-size:.76rem;color:var(--muted);display:grid;gap:1px}
+.meal li{display:flex;justify-content:space-between}
+.btn{background:var(--accent);color:var(--on-accent);border:0;border-radius:999px;padding:8px 14px;font-weight:700;font-size:.86rem;transition:transform .12s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:transparent;border:1.5px solid var(--accent);color:var(--accent);border-radius:999px;padding:6px 12px;font-size:.84rem;font-weight:600;text-align:left}
+.chip:hover{background:var(--accent);color:var(--on-accent)}
+.say{display:flex;gap:6px;border-top:1px solid var(--line);padding-top:10px}
+.say input{flex:1;min-width:0;font:inherit;font-size:.9rem;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+
+/* sections */
+section{scroll-margin-top:54px;padding:clamp(44px,7vw,88px) 0;border-top:1px solid var(--line)}
+.head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(16px,4vw,48px);align-items:end;margin-bottom:clamp(24px,4vw,44px)}
+.step{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,3vw,32px)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px}
+.big{font-family:var(--mono);font-weight:600;font-size:clamp(2.4rem,6vw,4rem);letter-spacing:-.06em;line-height:1}
+.big small{font-size:.45em;letter-spacing:-.02em}
+.rule-list{list-style:none;margin:0;padding:0}
+.rule-list li{padding:10px 0;border-top:1px solid var(--line);font-size:.95rem}
+.rule-list li:first-child{border-top:0}
+
+/* segmented control */
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.seg button{background:transparent;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:.86rem;font-weight:600;color:var(--muted)}
+.seg button:hover{color:var(--ink);border-color:var(--ink)}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* bars */
+.bars{display:grid;gap:9px}
+.bar{display:grid;grid-template-columns:minmax(110px,34%) 1fr 58px;gap:10px;align-items:center;font-size:.9rem}
+.bar .track{height:22px;background:var(--paper);border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.bar .fill{height:100%;background:var(--accent);border-radius:4px;width:0;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.bar.top .fill{background:var(--fat)}
+.bar .v{font-family:var(--mono);font-size:.8rem;text-align:right;font-variant-numeric:tabular-nums}
+.note{margin-top:14px;font-size:.9rem;color:var(--muted)}
+
+/* personas */
+.persona{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(16px,3vw,36px);align-items:start}
+.meter{display:grid;grid-template-columns:130px 1fr 132px;gap:10px;align-items:center;font-size:.88rem;padding:7px 0;border-top:1px solid var(--line)}
+.meter:first-child{border-top:0}
+.pips{display:flex;gap:4px}.meter>span:last-child{text-align:right}
+.pips i{height:10px;flex:1;border-radius:3px;background:var(--empty);transition:background .3s}
+.pips i.on{background:var(--accent)}
+
+/* funnel */
+.funnel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--surface)}
+.funnel div{padding:18px;border-left:1px solid var(--line)}
+.funnel div:first-child{border-left:0}
+.funnel b{font-family:var(--mono);font-size:1.9rem;font-weight:600;letter-spacing:-.05em;display:block;line-height:1.1}
+.cut{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center;font-size:.88rem}
+.cut s{border:1px dashed var(--muted);color:var(--muted);border-radius:999px;padding:3px 11px}
+
+/* concepts */
+.shot{background:#fff;border:1px solid var(--line);border-radius:14px;overflow-x:auto;padding:10px}
+.shot img{min-width:680px}
+.concept{display:grid;gap:18px}
+.concept-info{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:clamp(14px,3vw,30px)}
+.concept-info h4,.mini{margin:0 0 6px;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:400}
+.concept-info ul{margin:0;padding-left:18px;font-size:.92rem}
+.scores{display:grid;gap:16px}
+.score-row{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center}
+.score-row .lab{font-weight:600;font-size:.92rem}
+.score-row .lab span{display:block;font-family:var(--mono);font-size:.68rem;color:var(--muted);font-weight:400}
+.sb{display:grid;grid-template-columns:28px 1fr 44px;gap:8px;align-items:center;font-size:.78rem;margin:3px 0}
+.sb .track{height:14px;background:var(--paper);border-radius:4px;border:1px solid var(--line);overflow:hidden}
+.sb .fill{height:100%;background:var(--empty);transition:width .6s,background .3s}
+.sb.on .fill{background:var(--accent)}
+.sb.on{font-weight:700}
+.verdict{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
+.verdict .card{flex:1 1 200px;padding:16px}
+.verdict b{font-family:var(--mono);font-size:1.7rem;font-weight:600;letter-spacing:-.05em}
+
+/* merge */
+.merge{display:grid;grid-template-columns:1fr auto 1fr auto 1.2fr;gap:14px;align-items:stretch}
+.merge .op{align-self:center;font-family:var(--mono);font-size:1.6rem;color:var(--muted)}
+.merge .card.win{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.merge .card.win .muted{color:color-mix(in srgb,var(--paper) 70%,var(--ink))}
+
+/* final */
+.final{display:grid;grid-template-columns:minmax(240px,340px) minmax(0,1fr);gap:clamp(20px,4vw,52px);align-items:start}
+.final .shot img{min-width:0;margin:0 auto}
+.rings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ring{text-align:center}
+.ring svg{width:100%;max-width:170px;height:auto}
+.ring circle{fill:none;stroke-width:10}
+.ring .bg{stroke:var(--line)}
+.ring .fg{stroke:var(--accent);stroke-linecap:round;transform:rotate(-90deg);transform-origin:60px 60px;transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1)}
+.ring text{font-family:var(--mono);font-weight:600;fill:var(--ink)}
+.ring h3{font-size:1.05rem;margin-top:4px}
+
+footer{border-top:1px solid var(--line);padding:32px 0 56px;font-size:.88rem;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between}
+footer a{color:var(--accent);font-weight:600}
+
+@media (max-width:860px){
+  .hero-grid,.head,.persona,.final,.grid2{grid-template-columns:1fr}
+  h1{font-size:clamp(3.4rem,15vw,7rem)}
+  .grid3,.concept-info{grid-template-columns:1fr}
+  .funnel{grid-template-columns:1fr 1fr}
+  .funnel div:nth-child(3){border-left:0}
+  .funnel div:nth-child(n+3){border-top:1px solid var(--line)}
+  .merge{grid-template-columns:1fr}
+  .merge .op{justify-self:center}
+  .final .shot{max-width:340px}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  .demo-body{grid-template-columns:1fr}
+  .gauge{flex-direction:row;align-items:center}
+  .gauge svg{max-width:96px}
+  .chat{min-height:360px}
+  .rings{grid-template-columns:1fr 1fr}
+  .bar{grid-template-columns:1fr 52px}
+  .bar .name{grid-column:1/-1}
+  .meter{grid-template-columns:1fr auto}
+  .meter .pips{grid-column:1/-1;order:3}
+  .score-row{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <div class="brand">Nutri<i>Mood</i></div>
+    <nav aria-label="Sections">
+      <a href="#problem">Problem</a>
+      <a href="#research">Research</a>
+      <a href="#users">Users</a>
+      <a href="#concepts">Concepts</a>
+      <a href="#test">Test</a>
+      <a href="#final">Final design</a>
+      <a href="#results">Results</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">HCI design case study · 2024 · two design iterations</div>
+      <h1>Nutri<span>Mood</span></h1>
+      <p class="lede">A nutrition tracker you talk to. Say how you feel, pick a meal, and a body-shaped progress bar fills as your day adds up.</p>
+      <div class="facts">
+        <div class="fact"><b>75</b><span>survey responses<br>over three rounds</span></div>
+        <div class="fact"><b>3</b><span>prototypes<br>tested head to head</span></div>
+        <div class="fact"><b>4.62<small style="font-size:.55em">/5</small></b><span>ease of use,<br>final prototype</span></div>
+      </div>
+    </div>
+
+    <div class="demo" aria-label="Interactive demo of the NutriMood flow">
+      <div class="demo-top">
+        <span class="mono">Try it · scripted re-creation of the prototype flow</span>
+        <button class="linkbtn" id="reset" type="button">Start the day over</button>
+      </div>
+      <div class="demo-body">
+        <div class="gauge">
+          <svg viewBox="0 0 120 256" role="img" aria-labelledby="figt">
+            <title id="figt">Body-shaped progress bar</title>
+            <defs>
+              <clipPath id="body">
+                <circle cx="60" cy="22" r="16"/>
+                <rect x="53" y="34" width="14" height="14"/>
+                <rect x="30" y="44" width="60" height="86" rx="18"/>
+                <rect x="12" y="48" width="15" height="90" rx="7.5"/>
+                <rect x="93" y="48" width="15" height="90" rx="7.5"/>
+                <rect x="33" y="112" width="25" height="138" rx="11"/>
+                <rect x="62" y="112" width="25" height="138" rx="11"/>
+              </clipPath>
+            </defs>
+            <g clip-path="url(#body)">
+              <rect x="0" y="0" width="120" height="256" fill="var(--empty)"/>
+              <rect id="rc" x="0" width="120" fill="var(--carb)"/>
+              <rect id="rp" x="0" width="120" fill="var(--prot)"/>
+              <rect id="rf" x="0" width="120" fill="var(--fat)"/>
+            </g>
+            <text id="pct" class="pct" x="60" y="96" text-anchor="middle">65%</text>
+          </svg>
+          <div class="readout" aria-live="polite">
+            <div class="kcal"><span class="k">Calories</span><span class="mono"><span id="vk">1404</span> kcal</span></div>
+            <div><span class="k"><i class="sw" style="background:var(--carb)"></i>Carbs</span><span class="mono"><span id="vc">120</span> g</span></div>
+            <div><span class="k"><i class="sw" style="background:var(--prot)"></i>Protein</span><span class="mono"><span id="vp">60</span> g</span></div>
+            <div><span class="k"><i class="sw" style="background:var(--fat)"></i>Fat</span><span class="mono"><span id="vf">76</span> g</span></div>
+          </div>
+        </div>
+        <div class="chat">
+          <div class="log" id="log" aria-live="polite"></div>
+          <form class="say" id="say" autocomplete="off">
+            <input id="mood" type="text" placeholder="Type how you feel" aria-label="Type how you feel">
+            <button class="btn" type="submit">Send</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="head">
+      <div><div class="step">The problem</div><h2>Tracking food takes too long, so people stop.</h2></div>
+      <p>People want to eat better, and logging every meal by hand gets in the way. The brief: design a phone interface that removes the weighing, searching and typing, for fitness enthusiasts, people managing a health condition, and anyone after a balanced diet.</p>
+    </div>
+    <div class="grid3">
+      <div class="card"><div class="big">52<small>%</small></div><p class="small muted" style="margin-top:10px">of Americans said they were actively trying to follow a healthier diet (IFIC Food &amp; Health Survey, 2022, as cited in the project report).</p></div>
+      <div class="card"><div class="big">41<small>%</small></div><p class="small muted" style="margin-top:10px">of users abandon diet-tracking apps because manual entry is complex and slow (figure cited in the project report).</p></div>
+      <div class="card"><div class="big">61.5<small>%</small></div><p class="small muted" style="margin-top:10px">of our own survey respondents named the time it takes as their main difficulty with tracking.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="research">
+  <div class="wrap">
+    <div class="head">
+      <div><div class="step">01 · Needfinding</div><h2>Three ways of listening before drawing anything.</h2></div>
+      <p>A survey of 26 people, a heuristic evaluation of MyFitnessPal against simplicity, consistency, flexibility and feedback, and a thematic read of about 100 recent reviews each for MyFitnessPal and a best-selling kitchen scale.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="mini">Survey explorer · n = 26</div>
+        <div class="seg" id="survey-seg" role="group" aria-label="Survey question"></div>
+        <div class="bars" id="survey-bars"></div>
+        <p class="note" id="survey-note"></p>
+      </div>
+      <div class="card">
+        <div class="mini">What reviewers said</div>
+        <div class="seg" id="rev-seg" role="group" aria-label="Product reviews"></div>
+        <ul class="rule-list" id="rev-list"></ul>
+      </div>
+    </div>
+
+    <div class="grid3" style="margin-top:14px">
+      <div class="card"><div class="mini">Insight · heuristic evaluation</div><h3>Weight is the hard part.</h3><p class="small muted" style="margin-top:8px">Scanning identifies a food fast, yet the user still has to guess how much of it is on the plate. A barcode returns the whole packet.</p></div>
+      <div class="card"><div class="mini">Insight · survey</div><h3>Scales sit in the drawer.</h3><p class="small muted" style="margin-top:8px">65.4% of respondents rarely or never use a kitchen scale. Precise measurement has to arrive without extra effort.</p></div>
+      <div class="card"><div class="mini">Insight · reviews</div><h3>Clutter costs loyalty.</h3><p class="small muted" style="margin-top:8px">Long-time users were upset by a crowded interface and by features, such as the barcode scanner, moving behind a paywall.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="users">
+  <div class="wrap">
+    <div class="head">
+      <div><div class="step">02 · User profiles</div><h2>Four trackers, five variables.</h2></div>
+      <p>Each profile is a position on five variables: experience, seriousness, motivation, technical literacy and how often they open the app. Pick one to see what the interface owes that person.</p>
+    </div>
+    <div class="persona">
+      <div>
+        <div class="seg" id="per-seg" role="group" aria-label="User profile" style="flex-direction:column;align-items:stretch"></div>
+      </div>
+      <div class="card">
+        <h3 id="per-name"></h3>
+        <p id="per-desc" class="muted" style="margin:8px 0 14px;font-size:.95rem"></p>
+        <div id="per-meters"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="concepts">
+  <div class="wrap">
+    <div class="head">
+      <div><div class="step">03 · Brainstorm to prototypes</div><h2>Many ideas in, three concepts out.</h2></div>
+      <p>Ideas were generated individually first, then shared round-robin, 20 seconds per idea with no interruptions, so the loudest voice could not steer the group. Needfinding results and the user profiles decided what survived.</p>
+    </div>
+    <div class="funnel">
+      <div><b>~40</b><span class="small muted">individual ideas, about ten per person</span></div>
+      <div><b>90 min</b><span class="small muted">round-robin group session</span></div>
+      <div><b>6</b><span class="small muted">combined ideas after merging duplicates</span></div>
+      <div><b>3</b><span class="small muted">design alternatives taken to prototype</span></div>
+    </div>
+    <div class="cut"><span class="muted">Cut for time and feasibility:</span><s>Augmented reality</s><s>Barcode scanning</s><s>Gamification</s><s>Display on the scale itself</s></div>
+
+    <div style="margin-top:36px">
+      <div class="seg" id="con-seg" role="tablist" aria-label="Design alternative"></div>
+      <div class="concept" id="con-panel" role="tabpanel">
+        <div class="shot"><img id="con-img" alt="" width="1400" height="575"></div>
+        <div class="concept-info">
+          <div><h3 id="con-name"></h3><p id="con-desc" class="muted" style="margin-top:8px;font-size:.95rem"></p></div>
+          <div><h4>Testers liked</h4><ul id="con-pro"></ul></div>
+          <div><h4>Testers struggled with</h4><ul id="con-con"></ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="test">
+  <div class="wrap">
+    <div class="head">
+      <div><div class="step">04 · First evaluation</div><h2>23 people rated all three.</h2></div>
+      <p>Participants with nutrient-tracking experience scored each prototype from 1 to 5. One-way ANOVA found the prototypes differed on every metric. Select a prototype to trace it through the scores.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div class="seg" id="score-seg" role="group" aria-label="Highlight prototype"></div>
+        <div class="scores" id="scores"></div>
+        <p class="note">Mean rating out of 5, n = 23.</p>
+      </div>
+      <div>
+        <div class="verdict" id="verdict"></div>
+        <ul class="rule-list" style="margin-top:14px">
+          <li><b>Intuitiveness</b> <span class="mono small muted">p = 0.0456</span></li>
+          <li><b>Ease of use</b> <span class="mono small muted">p = 0.0123</span></li>
+          <li><b>Satisfaction</b> <span class="mono small muted">p = 0.0091</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:40px">
+      <div class="step">05 · Second iteration</div>
+      <div class="merge">
+        <div class="card"><div class="mini">Keep from prototype 1</div><h3>The assistant</h3><p class="small muted" style="margin-top:8px">Top score on every metric. Testers called the chat intuitive and the screens clean, and asked for more motivation and depth.</p></div>
+        <div class="op" aria-hidden="true">+</div>
+        <div class="card"><div class="mini">Borrow from prototype 3</div><h3>The silhouette</h3><p class="small muted" style="margin-top:8px">Standard progress bars worked but inspired nobody. A human figure that fills with calories and macros gives feedback people read at a glance.</p></div>
+        <div class="op" aria-hidden="true">=</div>
+        <div class="card win"><div class="mini" style="color:inherit;opacity:.7">High-fidelity prototype</div><h3>NutriMood, second iteration</h3><p class="small muted" style="margin-top:8px">One flow: speak or type a mood, choose a recommended meal, see the figure update on the same screen.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="final">
+  <div class="wrap">
+    <div class="head">
+      <div><div class="step">06 · Final prototype</div><h2>Four screens, one conversation.</h2></div>
+      <p>Built in Figma as a clickable high-fidelity prototype. Voice input and generative AI take the query; the interface handles the logging and shows the result where the user is already looking.</p>
+    </div>
+    <div class="final">
+      <div class="shot"><img src="img/final.jpg" width="426" height="813" alt="Four screens of the final prototype: home screen with the Activate NutriMood button and silhouette progress bar, the launch screen with a microphone button, the recommendations screen with two meal cards, and the updated logging screen."></div>
+      <div>
+        <div class="seg" id="fin-seg" role="group" aria-label="Screen"></div>
+        <div class="card">
+          <h3 id="fin-name"></h3>
+          <p id="fin-desc" style="margin-top:10px"></p>
+          <p class="note" id="fin-why"></p>
+        </div>
+        <ul class="rule-list" style="margin-top:16px">
+          <li><b>Hands-free by default.</b> Voice commands suit people who are cooking or find typing tedious.</li>
+          <li><b>Everything in one place.</b> Calories and the macro breakdown share one figure, so there is no second screen to visit.</li>
+          <li><b>Consistent parts.</b> The same home and back icons, colour scheme and colour-coded macros on every screen.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <div class="head">
+      <div><div class="step">07 · Final evaluation</div><h2>Every tester found it easy to use.</h2></div>
+      <p>26 volunteers with an interest in nutrition tracking used the prototype, then rated it on a five-point agreement scale and described what they liked and what they would change.</p>
+    </div>
+    <div class="rings" id="rings"></div>
+
+    <div class="card" style="margin-top:28px">
+      <div class="mini">Open-ended feedback · share of 26 respondents mentioning each theme</div>
+      <div class="seg" id="fb-seg" role="group" aria-label="Feedback theme"></div>
+      <div class="bars" id="fb-bars"></div>
+      <p class="note" id="fb-note"></p>
+    </div>
+
+    <div class="grid2" style="margin-top:28px">
+      <div><div class="mini">What worked</div><p>The three features testers praised most, voice commands, the silhouette and the AI assistant, each answer a need found in the first round of research: less time, less typing, clearer feedback.</p></div>
+      <div><div class="mini">What comes next</div><p>A cleaner interface for the functions some testers found hard to follow, more customisation and goal setting, photo recognition for logging, and links to water, fitness and smart-kitchen data.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>NutriMood · team project for a graduate human-computer interaction course, 2024.<br>All figures on this page come from the project report. The demo at the top is a re-creation, with meals and values taken from the prototype screens.</div>
+    <div><a href="https://www.figma.com/proto/14E0e8j9x5lNvjftJA5JJ4/Team-Project-Prototype?node-id=102-525&amp;t=LlmfjuJaARhD8g5R-1&amp;scaling=scale-down&amp;content-scaling=fixed&amp;page-id=102%3A305">Open the Figma prototype</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id)};
+var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+
+/* ---------- demo ---------- */
+var GOAL=2160, TOP=6, H=244;
+var START={k:1404,c:120,p:60,f:76};
+var MEALS={
+  salad:{name:"Avocado Salad",g:400,k:609,p:7.8,c:41.6,f:46.1},
+  wrap:{name:"Chicken Wrap",g:250,k:520,p:31,c:22,f:34}
+};
+var cur={k:START.k,c:START.c,p:START.p,f:START.f}, target=Object.assign({},START), logged=[], raf=0;
+function draw(){
+  var frac=Math.min(cur.k/GOAL,1), fill=frac*H;
+  var ck=cur.c*4, pk=cur.p*4, fk=cur.f*9, sum=ck+pk+fk||1;
+  var fh=fill*fk/sum, ph=fill*pk/sum, ch=fill*ck/sum, bottom=TOP+H;
+  var rf=$("rf"),rp=$("rp"),rc=$("rc");
+  rf.setAttribute("y",bottom-fh);rf.setAttribute("height",fh);
+  rp.setAttribute("y",bottom-fh-ph);rp.setAttribute("height",ph);
+  rc.setAttribute("y",bottom-fill);rc.setAttribute("height",ch);
+  $("pct").textContent=Math.round(cur.k/GOAL*100)+"%";
+  $("vk").textContent=Math.round(cur.k);$("vc").textContent=Math.round(cur.c);
+  $("vp").textContent=Math.round(cur.p);$("vf").textContent=Math.round(cur.f);
+}
+function tween(){
+  cancelAnimationFrame(raf);
+  if(reduce){cur=Object.assign({},target);draw();return}
+  var from=Object.assign({},cur), t0=performance.now(), D=900;
+  (function step(now){
+    var t=Math.min((now-t0)/D,1), e=1-Math.pow(1-t,3);
+    ["k","c","p","f"].forEach(function(key){cur[key]=from[key]+(target[key]-from[key])*e});
+    draw(); if(t<1) raf=requestAnimationFrame(step);
+  })(t0);
+}
+var log=$("log");
+function say(who,node){
+  var m=el("div","msg "+who); if(typeof node==="string") m.textContent=node; else m.appendChild(node);
+  log.appendChild(m); log.scrollTop=log.scrollHeight; return m;
+}
+function chips(list){
+  var box=el("div","chips");
+  list.forEach(function(c){var b=el("button","chip",c[0]);b.type="button";b.addEventListener("click",function(){box.remove();c[1]()});box.appendChild(b)});
+  var m=el("div","msg bot");m.appendChild(box);log.appendChild(m);log.scrollTop=log.scrollHeight;
+}
+function greet(){
+  say("bot","Hi there! How are you feeling today?");
+  chips([
+    ["I want to smash my nutrition goals",function(){mood("I am feeling like I want to smash my nutrition goals and be fit!")}],
+    ["I feel like having a hearty meal",function(){mood("I feel like having a hearty meal.")}]
+  ]);
+}
+function mood(text){
+  log.querySelectorAll(".chips").forEach(function(c){c.parentNode.remove()});
+  say("me",text);
+  var left=Object.keys(MEALS).filter(function(k){return logged.indexOf(k)<0});
+  if(!left.length){say("bot","Both sample meals are already logged. Start the day over to try again.");return}
+  say("bot","Based on your current mood and the dietary goals in your profile, I recommend:");
+  var grid=el("div","meals");
+  left.forEach(function(key){
+    var m=MEALS[key], card=el("div","meal");
+    card.appendChild(el("h4",null,m.name+", "+m.g+" g"));
+    var ul=el("ul");
+    [["Calories",m.k+" kcal"],["Protein",m.p+" g"],["Carbs",m.c+" g"],["Fat",m.f+" g"]].forEach(function(r){
+      var li=el("li");li.appendChild(el("span",null,r[0]));li.appendChild(el("span","mono",r[1]));ul.appendChild(li)});
+    card.appendChild(ul);
+    var b=el("button","btn","Choose "+m.name.split(" ")[0]+" "+m.name.split(" ")[1]);b.type="button";
+    b.addEventListener("click",function(){grid.querySelectorAll("button").forEach(function(x){x.disabled=true});choose(key)});
+    card.appendChild(b);grid.appendChild(card);
+  });
+  var wrap=el("div","msg bot");wrap.style.maxWidth="100%";wrap.style.alignSelf="stretch";wrap.appendChild(grid);log.appendChild(wrap);log.scrollTop=log.scrollHeight;
+}
+function choose(key){
+  var m=MEALS[key]; logged.push(key);
+  target={k:target.k+m.k,c:target.c+m.c,p:target.p+m.p,f:target.f+m.f}; tween();
+  var over=target.k>GOAL;
+  say("bot","Great choice! I have logged the "+m.name+" for you. Your nutritional progress is updated."+(over?" That takes you past today's "+GOAL+" kcal goal.":""));
+  say("bot","Is there anything else I can help you with?");
+  var opts=[];
+  if(logged.length<2) opts.push(["Recommend something else",function(){mood("What else would fit today?")}]);
+  opts.push(["Start the day over",reset]);
+  chips(opts);
+}
+function reset(){logged=[];target=Object.assign({},START);tween();log.textContent="";greet()}
+$("reset").addEventListener("click",reset);
+$("say").addEventListener("submit",function(e){e.preventDefault();var v=$("mood").value.trim();if(!v)return;$("mood").value="";mood(v)});
+draw();greet();
+
+/* ---------- generic bars + segmented control ---------- */
+function bars(host,rows){
+  host.textContent="";
+  var max=Math.max.apply(null,rows.map(function(r){return r[1]}));
+  rows.forEach(function(r){
+    var row=el("div","bar"+(r[1]===max?" top":""));
+    row.appendChild(el("span","name",r[0]));
+    var tr=el("div","track"),f=el("div","fill");tr.appendChild(f);row.appendChild(tr);
+    row.appendChild(el("span","v",r[1].toFixed(1)+"%"));
+    host.appendChild(row);
+    requestAnimationFrame(function(){requestAnimationFrame(function(){f.style.width=r[1]+"%"})});
+  });
+}
+function seg(host,labels,onPick,attr){
+  attr=attr||"aria-pressed";
+  labels.forEach(function(l,i){
+    var b=el("button",null,l);b.type="button";b.setAttribute(attr,i===0?"true":"false");
+    if(attr==="aria-selected")b.setAttribute("role","tab");
+    b.addEventListener("click",function(){
+      host.querySelectorAll("button").forEach(function(x){x.setAttribute(attr,"false")});
+      b.setAttribute(attr,"true");onPick(i)});
+    host.appendChild(b);
+  });
+  onPick(0);
+}
+
+/* ---------- survey ---------- */
+var SURVEY=[
+  {q:"Main challenges",rows:[["Time-consuming process",61.5],["Lack of detailed nutrition info",34.6],["Difficulty logging items",30.8],["Inaccurate measurements",26.9]],note:"Respondents could select several. Time dominates, which set the priority for everything after: fewer steps per meal."},
+  {q:"How often they track food",rows:[["Daily",11.5],["Several times a week",34.6],["Once a week",11.5],["Rarely",30.8],["Never",11.5]],note:"Close to an even split between regular and irregular trackers, so the design had to serve both."},
+  {q:"Tools they use",rows:[["Mobile apps",38.5],["Spreadsheets",7.7],["Paper journal",3.8],["Other, or not tracking",50.0]],note:"Half of respondents use something else or nothing, which leaves a lot of room for an easier tool."},
+  {q:"Kitchen scale use",rows:[["Every meal",3.8],["Once a day",7.7],["A few times a week",15.4],["Rarely",23.1],["Never",42.3],["No response",7.7]],note:"Two in three rarely or never weigh food, the most accurate input available to them."},
+  {q:"Would use a smart scale app",rows:[["Very likely",19.2],["Likely",23.1],["Neutral",15.4],["Unlikely",19.2],["Very unlikely",15.4],["No response",7.7]],note:"42.3% likely or very likely against 34.6% unlikely: interest is real but divided, a reason not to make hardware the whole product."},
+  {q:"Features they want most",rows:[["Ease of use",30.8],["Accuracy",23.1],["Detailed nutrition info",11.5],["Customisable goals",11.5]],note:"Ease of use ranks first, ahead of accuracy."}
+];
+seg($("survey-seg"),SURVEY.map(function(s){return s.q}),function(i){bars($("survey-bars"),SURVEY[i].rows);$("survey-note").textContent=SURVEY[i].note});
+
+/* ---------- reviews ---------- */
+var REV=[
+  {q:"MyFitnessPal · praise",items:["Large food database makes meals easy to find and log","Recipe builder for homemade meals","Syncs with fitness trackers and health apps","Nutrition detail beyond calories"]},
+  {q:"MyFitnessPal · complaints",items:["Cluttered interface that is hard to navigate","Large, intrusive ads and repeated upgrade prompts","Barcode scanner moved to the paid tier","Sync problems, slow and laggy screens","Search results poorly presented; serving sizes in the recipe builder go wrong"]},
+  {q:"Kitchen scale · praise",items:["Accurate, reliable measurements for portion control","Simple to use: tare function and unit conversion","Easy-to-read backlit display","Compact, durable, affordable, long battery life"]},
+  {q:"Kitchen scale · complaints",items:["Readings drift or become inconsistent over time","Platform too small for larger bowls and plates","Display clears the moment the item is removed","Some models cannot measure under 3 grams"]}
+];
+seg($("rev-seg"),REV.map(function(r){return r.q}),function(i){var ul=$("rev-list");ul.textContent="";REV[i].items.forEach(function(t){ul.appendChild(el("li",null,t))})});
+
+/* ---------- personas ---------- */
+var VARS=["Experience","Seriousness","Motivation","Tech literacy","Frequency of use"];
+var PER=[
+  {n:"The novice casual tracker",d:"Opens the app now and then for a general idea of what they eat. Needs an intuitive layout, clear instructions and visual aids. Discoverability matters more than speed.",v:[[1,"Novice"],[1,"Casual"],[1,"Low to medium"],[2,"Moderate"],[1,"Occasional"]]},
+  {n:"The expert serious tracker",d:"Tracks macros meticulously every day. Values efficiency and precision: advanced features, quick input, customisable options, speed and batch processing.",v:[[3,"Expert"],[3,"Serious"],[3,"High"],[3,"High"],[3,"Daily"]]},
+  {n:"The motivated novice tracker",d:"Highly motivated to improve their diet and uses the app weekly. Needs a balance of discoverability and efficiency, with tips and guides that grow with their knowledge.",v:[[1,"Novice"],[2,"Moderately serious"],[3,"High"],[2,"Moderate"],[2,"Regular, not daily"]]},
+  {n:"The casual tech-savvy user",d:"Checks in periodically for insight into intake and habits. Enjoys innovative features and a smooth experience without in-depth tracking; features should be easy to find and use.",v:[[3,"Expert"],[1,"Casual"],[2,"Medium"],[3,"High"],[1,"Occasional"]]}
+];
+var pm=$("per-meters");
+VARS.forEach(function(v){var r=el("div","meter");r.appendChild(el("span",null,v));var p=el("div","pips");p.appendChild(el("i"));p.appendChild(el("i"));p.appendChild(el("i"));r.appendChild(p);r.appendChild(el("span","mono small muted"));pm.appendChild(r)});
+seg($("per-seg"),PER.map(function(p){return p.n}),function(i){
+  var P=PER[i];$("per-name").textContent=P.n;$("per-desc").textContent=P.d;
+  pm.querySelectorAll(".meter").forEach(function(r,j){
+    r.querySelectorAll("i").forEach(function(pip,k){pip.className=k<P.v[j][0]?"on":""});
+    r.lastChild.textContent=P.v[j][1]});
+});
+
+/* ---------- concepts ---------- */
+var CON=[
+  {t:"1 · Virtual assistant",n:"NutriMood: a mood-based virtual assistant",img:"img/alt1.jpg",h:575,alt:"Medium-fidelity screens of prototype 1: a home screen with an Activate NutriMood button and four macro progress bars, an activation screen with a microphone, a recommendations screen with two meal cards, and a logging screen with updated bars.",
+   d:"Call the assistant by voice or tap. It asks how you feel, then recommends meals with weights that fit your mood, restrictions and remaining macros, and logs your choice.",
+   pro:["Intuitive and easy to use","Clean, professional-looking interface","Chat function; enough detail without overload"],con:["One tester found logging meals arduous","Some wanted more in-depth information"]},
+  {t:"2 · Meal identification",n:"Meal identification with a camera scale",img:"img/alt2.jpg",h:579,alt:"Medium-fidelity screens of prototype 2: a home screen showing scale connection, current weight and a calorie bar; a camera page; and a page listing detected items, macros and a meal suggestion.",
+   d:"A scale with cameras recognises the ingredients in a meal, calculates carbohydrates, protein and fat, and suggests meals that fit what remains of the day's goals.",
+   pro:["Depth of information"],con:["More manual input than the other two","Needs more colour and less text","Purpose of some elements, such as a grey box, was unclear"]},
+  {t:"3 · Smart scale",n:"NutriScale: smart scale and a body-shaped progress bar",img:"img/alt3.jpg",h:463,alt:"High-fidelity screens of prototype 3: a lock-screen notification from the scale, an item-detected prompt, calorie, macronutrient and micronutrient views built on a human silhouette that fills up, and a measurement history.",
+   d:"The scale notices an item, notifies the phone and asks whether to log it. Progress appears as a human figure that fills through the day, with calorie, macro and micronutrient views.",
+   pro:["Simplicity and clean design","Convenient for managing and planning","In-depth information"],con:["Felt cluttered or confusing to some","Purpose of the middle screen was unclear","Too much information at once for a few"]}
+];
+function fillList(ul,items){ul.textContent="";items.forEach(function(t){ul.appendChild(el("li",null,t))})}
+seg($("con-seg"),CON.map(function(c){return c.t}),function(i){
+  var c=CON[i],im=$("con-img");im.src=c.img;im.alt=c.alt;im.height=c.h;
+  $("con-name").textContent=c.n;$("con-desc").textContent=c.d;fillList($("con-pro"),c.pro);fillList($("con-con"),c.con);
+},"aria-selected");
+
+/* ---------- scores ---------- */
+var METRICS=["Intuitiveness","Ease of use","Satisfaction"];
+var SC=[[4.00,4.13,4.13],[3.39,3.35,3.22],[3.87,3.78,3.74]];
+var FAV=[[39.1,4.3],[8.7,52.2],[34.8,39.1]];
+var SAY=["Highest on all three metrics. Chosen as the base for the second iteration.","Lowest on all three metrics, and the least favourite of more than half the testers.","A consistent second. Its silhouette progress bar carried over into the final design."];
+var sc=$("scores");
+METRICS.forEach(function(m,mi){
+  var row=el("div","score-row"),lab=el("div","lab",m);row.appendChild(lab);
+  var col=el("div");
+  SC.forEach(function(p,pi){
+    var sb=el("div","sb");sb.dataset.p=pi;sb.appendChild(el("span","mono","P"+(pi+1)));
+    var tr=el("div","track"),f=el("div","fill");f.style.width=(p[mi]/5*100)+"%";tr.appendChild(f);sb.appendChild(tr);
+    sb.appendChild(el("span","mono",p[mi].toFixed(2)));col.appendChild(sb)});
+  row.appendChild(col);sc.appendChild(row);
+});
+seg($("score-seg"),["Prototype 1","Prototype 2","Prototype 3"],function(i){
+  sc.querySelectorAll(".sb").forEach(function(s){s.classList.toggle("on",+s.dataset.p===i)});
+  var v=$("verdict");v.textContent="";
+  [["Named favourite by",FAV[i][0]],["Named least favourite by",FAV[i][1]]].forEach(function(r){
+    var c=el("div","card");c.appendChild(el("div","mini",r[0]));c.appendChild(el("b",null,r[1].toFixed(1)+"%"));v.appendChild(c)});
+  var c=el("div","card");c.style.flexBasis="100%";c.appendChild(el("p",null,SAY[i]));v.appendChild(c);
+});
+
+/* ---------- final screens ---------- */
+var FIN=[
+  {t:"Home",n:"Home screen",d:"A large Activate NutriMood button sits above the day's progress: the silhouette, a percentage, and calories, carbs, protein and fat beside it.",w:"The entry point is impossible to miss, and current status is readable before any interaction."},
+  {t:"Launch",n:"NutriMood launch screen",d:"The assistant opens with “Hi there! How are you feeling today?” The user can type or tap the microphone to speak.",w:"A friendly greeting invites a reply, and speaking lowers the effort of logging or asking."},
+  {t:"Recommendations",n:"Recommendations",d:"Two meals matched to mood and profile goals, each with a photo, weight, calories and macros, a Select button and a recipe link.",w:"Images speed up the decision; the numbers keep it an informed one."},
+  {t:"Logged",n:"Updated logging screen",d:"“Great choice!” confirms the meal, and the silhouette and figures update on the same screen, from 65% to 85% in the prototype's example.",w:"Immediate feedback shows the effect of the choice and reinforces the habit."}
+];
+seg($("fin-seg"),FIN.map(function(f){return f.t}),function(i){$("fin-name").textContent=FIN[i].n;$("fin-desc").textContent=FIN[i].d;$("fin-why").textContent="Why: "+FIN[i].w});
+
+/* ---------- rings ---------- */
+var RINGS=[["Clear to understand",4.35,0.56,92.3],["Easy to use",4.62,0.50,100],["Can fulfil my nutrition goals",4.38,0.70,88.5]];
+var NS="http://www.w3.org/2000/svg",C=2*Math.PI*48;
+RINGS.forEach(function(r){
+  var box=el("div","ring card"),svg=document.createElementNS(NS,"svg");svg.setAttribute("viewBox","0 0 120 120");svg.setAttribute("role","img");
+  svg.setAttribute("aria-label",r[0]+": mean "+r[1]+" out of 5");
+  var bg=document.createElementNS(NS,"circle");bg.setAttribute("class","bg");
+  var fg=document.createElementNS(NS,"circle");fg.setAttribute("class","fg");
+  [bg,fg].forEach(function(c){c.setAttribute("cx",60);c.setAttribute("cy",60);c.setAttribute("r",48)});
+  fg.setAttribute("stroke-dasharray",C);fg.setAttribute("stroke-dashoffset",C);
+  var t=document.createElementNS(NS,"text");t.setAttribute("x",60);t.setAttribute("y",66);t.setAttribute("text-anchor","middle");t.setAttribute("font-size",22);t.textContent=r[1].toFixed(2);
+  var t2=document.createElementNS(NS,"text");t2.setAttribute("x",60);t2.setAttribute("y",82);t2.setAttribute("text-anchor","middle");t2.setAttribute("font-size",8);t2.setAttribute("style","fill:var(--muted);font-weight:400");t2.textContent="of 5 · SD "+r[2].toFixed(2);
+  svg.appendChild(bg);svg.appendChild(fg);svg.appendChild(t);svg.appendChild(t2);box.appendChild(svg);
+  box.appendChild(el("h3",null,r[0]));box.appendChild(el("p","small muted",r[3]+"% agreed or strongly agreed"));
+  $("rings").appendChild(box);
+  requestAnimationFrame(function(){requestAnimationFrame(function(){fg.setAttribute("stroke-dashoffset",C*(1-r[1]/5))})});
+});
+
+/* ---------- feedback ---------- */
+var FB=[
+  {q:"Most liked",rows:[["Voice commands",26.9],["Silhouette progress bar",19.2],["AI assistant",15.4],["Real-time progress updates",11.5],["Detailed nutrition info",11.5]],note:"The two ideas merged in the second iteration, the assistant's voice interaction and the silhouette, are the two most praised features."},
+  {q:"Needs work",rows:[["Interface refinement",15.4],["Customisation options",11.5],["Goal setting and tracking",7.7],["Data visualisation",7.7],["Other health metrics",7.7]],note:"A few testers found the progress figure confusing or the amount of data heavy; some could not tell how to set goals or restrictions."},
+  {q:"Suggested additions",rows:[["Photo recognition for logging",15.4],["Weekly and monthly summaries, water",11.5],["Bigger food database",7.7],["Gamification",7.7],["Smart appliances, barcode scanner",7.7]],note:"Several ideas cut during brainstorming for lack of time, including barcode scanning and gamification, came back as requests."}
+];
+seg($("fb-seg"),FB.map(function(f){return f.q}),function(i){bars($("fb-bars"),FB[i].rows);$("fb-note").textContent=FB[i].note});
+
+/* ---------- nav ---------- */
+var links=[].slice.call(document.querySelectorAll(".nav a"));
+links.forEach(function(a){a.addEventListener("click",function(e){var t=document.querySelector(a.getAttribute("href"));if(t){e.preventDefault();t.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"})}})});
+if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting)links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id)})})},{rootMargin:"-40% 0px -55% 0px"});
+  document.querySelectorAll("section[id]").forEach(function(s){io.observe(s)});
+}
+})();
+</script>
+</body>
+</html>
