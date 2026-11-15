@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zoom Chat Redesign Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one wide column; every design gets a full-width stage with one large screen at a time.
+   Colour system is the prototype's own tab coding: blue = chat, green = files, violet = settings. */
+:root{
+  --bg:#f3f5fa; --surface:#ffffff; --surface-2:#e9edf5; --ink:#141b2d; --muted:#56607a; --line:#d5dbe8;
+  --chat:#2563eb; --files:#0f9f6e; --settings:#7c4ddb; --warn:#c2410c;
+  --chat-soft:#dfe9ff; --files-soft:#d9f3e8; --settings-soft:#ebe2fb;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --shadow:0 1px 2px rgba(20,27,45,.06),0 8px 28px rgba(20,27,45,.08);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0e1320; --surface:#171e30; --surface-2:#1f2840; --ink:#eef1f8; --muted:#a2acc4; --line:#2c3652;
+    --chat:#6b9bff; --files:#35c995; --settings:#a98bf2; --warn:#fb923c;
+    --chat-soft:#1b2c55; --files-soft:#133a2f; --settings-soft:#2c2350;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 28px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0e1320; --surface:#171e30; --surface-2:#1f2840; --ink:#eef1f8; --muted:#a2acc4; --line:#2c3652;
+  --chat:#6b9bff; --files:#35c995; --settings:#a98bf2; --warn:#fb923c;
+  --chat-soft:#1b2c55; --files-soft:#133a2f; --settings-soft:#2c2350;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 28px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.08;margin:0}
+p{margin:0}
+img{max-width:100%;display:block}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--chat);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+
+/* nav */
+nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;align-items:center;overflow-x:auto;padding-top:10px;padding-bottom:10px}
+nav .who{font-family:var(--display);font-weight:700;margin-right:auto;white-space:nowrap;padding-right:16px}
+nav a{color:var(--muted);text-decoration:none;font-size:.92rem;padding:6px 12px;border-radius:999px;white-space:nowrap}
+nav a:hover,nav a.on{background:var(--surface-2);color:var(--ink)}
+
+/* hero */
+.hero{padding:64px 0 48px}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+.name{font-family:var(--display);font-weight:800;font-size:clamp(3.2rem,8vw,6rem);letter-spacing:-.03em;line-height:.95}
+.name span{display:inline-block;background:linear-gradient(90deg,var(--chat),var(--files) 55%,var(--settings));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero h1{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;margin-top:22px;max-width:20ch}
+.hero .lede{color:var(--muted);margin-top:16px;max-width:56ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 13px;font-size:.88rem}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:10px;padding:11px 18px;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn.primary{background:var(--chat);border-color:var(--chat);color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#0e1320}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.primary{color:#0e1320}}
+.btn:hover{transform:translateY(-1px)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow);border-top:5px solid var(--c,var(--chat))}
+.tile b{display:block;font-family:var(--display);font-size:2.6rem;font-weight:800;line-height:1}
+.tile span{color:var(--muted);font-size:.95rem;display:block;margin-top:8px}
+
+/* sections */
+section{padding:56px 0;border-top:1px solid var(--line)}
+.sec-head{display:flex;flex-direction:column;gap:10px;margin-bottom:30px;max-width:70ch}
+.sec-head h2{font-size:clamp(1.9rem,4vw,2.8rem);font-weight:800;letter-spacing:-.02em}
+.sec-head p{color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+h3{font-size:1.25rem;font-weight:700;margin-bottom:12px}
+
+/* process */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;counter-reset:s}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left}
+.step.on{border-color:var(--chat);box-shadow:0 0 0 3px var(--chat-soft)}
+.step .mono{display:block;margin-bottom:6px}
+.step b{font-family:var(--display);font-size:1.1rem}
+.step-detail{margin-top:14px}
+.iter{display:flex;gap:10px;align-items:center;margin:22px 0 10px}
+.iter::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* segmented control */
+.seg{display:flex;flex-wrap:wrap;gap:6px;background:var(--surface-2);padding:5px;border-radius:12px;width:fit-content;max-width:100%}
+.seg button{border:0;background:transparent;border-radius:8px;padding:8px 14px;font-size:.95rem;font-weight:500;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+/* bars */
+.bars{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.bar-row{display:grid;grid-template-columns:150px 1fr 64px;gap:12px;align-items:center;font-size:.95rem}
+.bar-track{height:26px;background:var(--surface-2);border-radius:7px;overflow:hidden}
+.bar-fill{height:100%;background:var(--c,var(--chat));border-radius:7px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.bar-row .num{text-align:right;font-weight:600}
+.note{color:var(--muted);font-size:.9rem;margin-top:14px}
+.big{font-family:var(--display);font-weight:800;font-size:3.2rem;line-height:1}
+
+/* heuristics */
+.issue-list{list-style:none;padding:0;margin:16px 0 0;display:flex;flex-direction:column;gap:10px}
+.issue-list li{padding:12px 14px;border-left:4px solid var(--c);background:var(--surface-2);border-radius:0 10px 10px 0}
+.issue-list b{display:block}
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.quote{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;font-size:1rem}
+.quote::before{content:"“";font-family:var(--display);font-size:2.4rem;line-height:.6;display:block;color:var(--c,var(--chat));margin-bottom:8px}
+.quote small{display:block;color:var(--muted);margin-top:10px;font-size:.82rem}
+
+/* design stages */
+.design{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);margin-bottom:40px;overflow:hidden}
+.design-top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;padding:26px 28px 18px;border-top:6px solid var(--c)}
+.design-top h3{font-size:clamp(1.5rem,3vw,2rem);margin:6px 0 6px}
+.design-top p{color:var(--muted);max-width:60ch}
+.badge{display:inline-block;background:var(--c);color:#fff;border-radius:999px;padding:3px 12px;font-size:.82rem;font-weight:600}
+.stage{background:var(--surface-2);padding:22px 28px 28px}
+.stage-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.shot{display:block;width:100%;max-width:900px;margin:0 auto;padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;cursor:zoom-in;position:relative}
+.shot img{width:100%;height:auto}
+.shot .hint{position:absolute;right:12px;bottom:12px;background:rgba(20,27,45,.82);color:#fff;font-size:.82rem;padding:5px 11px;border-radius:999px}
+.caption{text-align:center;color:var(--muted);margin-top:12px;font-size:.98rem;max-width:70ch;margin-inline:auto}
+.design-info{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;padding:26px 28px 30px}
+.design-info ul{margin:0;padding-left:20px}
+.design-info li{margin-bottom:6px}
+.score{display:grid;grid-template-columns:1fr 46px;gap:4px 10px;align-items:center;margin-bottom:12px;font-size:.95rem}
+.score .bar-track{grid-column:1/-1;height:10px}
+.pos{color:var(--files);font-weight:600}.neg{color:var(--warn);font-weight:600}
+
+/* compare */
+.cmp{display:flex;flex-direction:column;gap:22px;margin-top:8px}
+.cmp-group .lab{font-weight:600;margin-bottom:8px}
+.cmp-row{display:grid;grid-template-columns:90px 1fr 50px;gap:10px;align-items:center;margin-bottom:6px;font-size:.92rem}
+.cmp-row .bar-track{height:18px}
+.votes{display:flex;height:64px;border-radius:12px;overflow:hidden;margin-top:16px}
+.votes div{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:var(--display);font-size:1.1rem;background:var(--c)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;font-size:.92rem;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--c);margin-right:6px}
+
+/* feature map */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;border-left:5px solid var(--c)}
+.feat b{display:block;font-family:var(--display);font-size:1.05rem;margin-bottom:4px}
+.feat span{color:var(--muted);font-size:.93rem}
+
+/* live demo: fixed light or dark skin of its own, as in the prototype */
+.demo-shell{border-radius:18px;border:1px solid var(--line);overflow:hidden;box-shadow:var(--shadow)}
+.demo{--d-bg:#f3f4f6;--d-panel:#fff;--d-ink:#111827;--d-sub:#6b7280;--d-item:#f3f4f6;--d-line:#e5e7eb;
+  display:flex;height:620px;background:var(--d-bg);color:var(--d-ink);font-size:17px;position:relative}
+.demo.dark{--d-bg:#111827;--d-panel:#1f2937;--d-ink:#f3f4f6;--d-sub:#9ca3af;--d-item:#374151;--d-line:#374151}
+.d-main{flex:1;min-width:0;padding:22px;display:flex;flex-direction:column;gap:14px}
+.d-main h4{margin:0;font-family:var(--display);font-size:1.5rem}
+.d-video{flex:1;background:var(--d-panel);border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;color:var(--d-sub);text-align:center;padding:16px}
+.d-toggle{position:absolute;top:50%;transform:translate(-50%,-50%);z-index:3;width:44px;height:44px;border-radius:10px;border:2px solid var(--d-ink);background:var(--d-panel);color:var(--d-ink);display:grid;place-items:center}
+.d-side{width:var(--w,400px);max-width:78%;background:var(--d-panel);border-left:1px solid var(--d-line);display:flex;flex-direction:column;transition:width .25s}
+.demo.collapsed .d-side{display:none}
+.d-tabs{display:grid;grid-template-columns:repeat(3,1fr)}
+.d-tabs button{border:0;background:transparent;color:var(--d-ink);padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:.95rem;font-weight:500}
+.d-tabs button[aria-selected="true"]{background:var(--tc);color:#fff}
+.d-body{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.d-search{display:flex;gap:10px;align-items:center}
+.d-search input,.d-compose input{flex:1;min-width:0;font:inherit;padding:10px 12px;border:1px solid var(--d-line);border-radius:8px;background:var(--d-panel);color:var(--d-ink)}
+.d-item{background:var(--d-item);border-radius:8px;padding:11px 13px;display:flex;gap:10px;justify-content:space-between;align-items:flex-end}
+.d-item small{display:block;color:var(--d-sub);font-size:.85rem;margin-top:2px}
+.d-like{border:1px solid var(--d-line);background:var(--d-panel);color:var(--d-ink);border-radius:8px;padding:4px 9px;font-size:.9rem;white-space:nowrap}
+.d-like.on{background:#2563eb;border-color:#2563eb;color:#fff}
+.d-compose{display:flex;gap:8px}
+.d-compose button{border:0;background:#2563eb;color:#fff;border-radius:8px;padding:0 16px;font-weight:600}
+.d-foot{padding:14px 16px;border-top:1px solid var(--d-line)}
+.d-save{width:100%;border:0;border-radius:8px;padding:13px;color:#fff;font-weight:600;font-size:1rem;background:var(--tc)}
+.d-set label{display:flex;gap:10px;align-items:center;padding:6px 0}
+.d-set input[type=checkbox]{width:20px;height:20px}
+.d-set input[type=range]{width:100%}
+.d-empty{color:var(--d-sub)}
+.toast{position:absolute;left:50%;bottom:86px;transform:translateX(-50%);background:#111827;color:#fff;padding:9px 16px;border-radius:999px;font-size:.92rem;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.try{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px;padding:0;list-style:none}
+.try li{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:.9rem}
+
+/* likert */
+.lk-row{display:grid;grid-template-columns:minmax(200px,1.1fr) 1.4fr 56px;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.lk-row:last-child{border-bottom:0}
+.lk-bar{display:flex;height:26px;border-radius:7px;overflow:hidden;background:var(--surface-2)}
+.lk-bar div{height:100%}
+.lk-row b{font-family:var(--display);font-size:1.25rem;text-align:right}
+.s1,.legend i.s1{background:#b4532a}.s2,.legend i.s2{background:#e0915f}.s3,.legend i.s3{background:#b9c0d0}.s4,.legend i.s4{background:#6fa5ec}.s5,.legend i.s5{background:#2563eb}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:50;background:rgba(8,11,20,.92);display:none;flex-direction:column}
+.lb.open{display:flex}
+.lb-bar{display:flex;gap:8px;align-items:center;padding:12px 16px;color:#fff}
+.lb-bar span{margin-right:auto;font-weight:600}
+.lb-bar button{background:#fff;color:#111827;border:0;border-radius:8px;padding:8px 14px;font-weight:600}
+.lb-scroll{flex:1;overflow:auto;padding:0 16px 24px}
+.lb-scroll img{margin:0 auto;max-width:none;background:#fff;border-radius:10px}
+
+footer{padding:40px 0 64px;border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
+
+@media (max-width:900px){
+  .hero-grid,.grid2,.grid3,.design-info,.features,.quotes{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .lk-row{grid-template-columns:1fr 56px}.lk-row .lk-bar{grid-column:1/-1;order:3}
+  .bar-row{grid-template-columns:110px 1fr 56px}
+  .demo{height:640px;font-size:16px}.d-main{padding:12px}
+  .design-top,.stage,.design-info{padding-left:18px;padding-right:18px}
+}
+@media (max-width:480px){.tiles{grid-template-columns:1fr 1fr}.tile b{font-size:2rem}.d-main h4{font-size:1.1rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<nav aria-label="Sections">
+  <div class="wrap">
+    <span class="who">Jun Huang</span>
+    <a href="#process">Process</a>
+    <a href="#research">Research</a>
+    <a href="#designs">Three designs</a>
+    <a href="#verdict">Verdict</a>
+    <a href="#final">Final prototype</a>
+    <a href="#results">Results</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="mono">Project portfolio · Human-Computer Interaction</p>
+      <div class="name"><span>Jun Huang</span></div>
+      <h1>Redesigning Zoom's chat and file sharing</h1>
+      <p class="lede">A two-iteration design study. I surveyed Zoom users, audited the interface against three usability heuristics, built three competing sidebar designs in React, and merged the strongest parts into one tested prototype.</p>
+      <div class="chips">
+        <span class="chip">CS6750 · Georgia Tech</span>
+        <span class="chip">Individual project · Summer 2024</span>
+        <span class="chip">Needfinding</span>
+        <span class="chip">Prototyping in React</span>
+        <span class="chip">Survey evaluation</span>
+      </div>
+      <div class="cta">
+        <a class="btn primary" href="#final">Try the final prototype</a>
+        <a class="btn" href="https://youtu.be/dEuP3QbD-Pw">Watch the video walkthrough</a>
+      </div>
+    </div>
+    <div class="tiles">
+      <div class="tile" style="--c:var(--chat)"><b class="num">75</b><span>survey responses across three rounds of 25</span></div>
+      <div class="tile" style="--c:var(--files)"><b class="num">3 → 1</b><span>competing designs merged into one prototype</span></div>
+      <div class="tile" style="--c:var(--settings)"><b class="num">12</b><span>usability issues found in the heuristic audit</span></div>
+      <div class="tile" style="--c:var(--chat)"><b class="num">84%</b><span>would choose the final design over today's Zoom</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="process">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="mono">How the project ran</p>
+      <h2>Two trips around the design life cycle</h2>
+      <p>Select a stage to see what happened in it.</p>
+    </div>
+    <div class="iter mono">Iteration 1 · low fidelity</div>
+    <div class="steps" id="steps1"></div>
+    <div class="iter mono">Iteration 2 · medium fidelity</div>
+    <div class="steps" id="steps2"></div>
+    <div class="card step-detail" id="stepDetail" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="research">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="mono">Needfinding · 25 respondents</p>
+      <h2>People don't dislike Zoom chat. They barely use it for files.</h2>
+      <p>Ratings of the current chat and file sharing cluster around the neutral midpoint. The open answers explain why: files vanish when the meeting ends, chat is hard to find, and nothing is saved unless you do it by hand.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>What the survey said</h3>
+        <div class="seg" id="surveySeg" role="group" aria-label="Survey question"></div>
+        <p class="note" id="surveyQ" style="margin-top:14px;color:var(--ink);font-weight:500"></p>
+        <div class="bars" id="surveyBars"></div>
+        <p class="note" id="surveyNote"></p>
+      </div>
+      <div class="card">
+        <h3>The clearest signal</h3>
+        <div class="big num" style="color:var(--files)">72%</div>
+        <p style="margin-top:10px">agreed that a <strong>Save chat history / files</strong> button matters. 18 of 25 respondents rated it 4 or 5 out of 5, the strongest agreement in the survey.</p>
+        <p class="note">Screen sharing was the most used way to show a file (17 of 25), followed by cloud links (10). Only 3 people shared files through Zoom chat itself.</p>
+        <p class="note">Most respondents were occasional users: 11 used Zoom rarely and 8 monthly, so the designs had to be obvious without practice.</p>
+      </div>
+    </div>
+
+    <div class="quotes">
+      <div class="quote" style="--c:var(--chat)">Not using Zoom to share files. Because I will lose them when the meeting ends.<small>Respondent 1, daily user</small></div>
+      <div class="quote" style="--c:var(--files)">Cannot save chat history easily, I have to manually do it.<small>Respondent 25, weekly user</small></div>
+      <div class="quote" style="--c:var(--settings)">The chat box can be extremely crowded during office hour when there are a lot of students.<small>Respondent 22</small></div>
+    </div>
+
+    <div class="card" style="margin-top:24px">
+      <h3>Heuristic evaluation: 12 issues across three heuristics</h3>
+      <div class="seg" id="heurSeg" role="group" aria-label="Heuristic"></div>
+      <ul class="issue-list" id="heurList"></ul>
+    </div>
+  </div>
+</section>
+
+<section id="designs">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="mono">Brainstorming and prototyping</p>
+      <h2>Three designs, three bets</h2>
+      <p>Each alternative was built in React and shown to 25 participants. Every screen below is displayed on its own at full width. Switch states with the buttons, and click any screen to open it larger and zoom into the chat text.</p>
+    </div>
+    <div id="designList"></div>
+  </div>
+</section>
+
+<section id="verdict">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="mono">Evaluation · 25 participants · 1 to 5 scale</p>
+      <h2>Version 3 won the vote, but each design led somewhere</h2>
+      <p>All three averaged above 4 out of 5 on every question. The scores were close, so the open comments decided what carried forward.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Mean rating by question</h3>
+        <div class="cmp" id="cmp"></div>
+        <div class="legend">
+          <span><i style="--c:var(--chat)"></i>Design 1</span>
+          <span><i style="--c:var(--files)"></i>Design 2</span>
+          <span><i style="--c:var(--settings)"></i>Design 3</span>
+        </div>
+        <p class="note">Bars start at 3.0 so the small differences are visible.</p>
+      </div>
+      <div class="card">
+        <h3>Which version do you prefer overall?</h3>
+        <div class="votes" role="img" aria-label="Version 3: 14 votes. Version 1: 8 votes. Version 2: 3 votes.">
+          <div style="--c:var(--settings);width:56%">V3 · 14</div>
+          <div style="--c:var(--chat);width:32%">V1 · 8</div>
+          <div style="--c:var(--files);width:12%">V2 · 3</div>
+        </div>
+        <p class="note">Votes counted from the raw survey export: 56% for Version 3, 32% for Version 1, 12% for Version 2.</p>
+        <h3 style="margin-top:24px">What each design contributed</h3>
+        <ul style="margin:0;padding-left:20px">
+          <li><strong>Design 1:</strong> colour per function and a plain, obvious layout.</li>
+          <li><strong>Design 2:</strong> the tabbed layout with the best screen-space score (4.36).</li>
+          <li><strong>Design 3:</strong> search, settings, reactions and a sidebar that hides.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="final">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="mono">Iteration 2 · medium fidelity</p>
+      <h2>The final prototype</h2>
+      <p>One sidebar that keeps Design 1's clarity, Design 2's layout and Design 3's power features, plus the changes participants asked for by name.</p>
+    </div>
+
+    <h3>Try it here</h3>
+    <ul class="try">
+      <li>Switch tabs and watch the Save button change</li>
+      <li>Collapse the sidebar with the square button</li>
+      <li>Search, react, send a message</li>
+      <li>Open Settings: dark mode and sidebar width</li>
+    </ul>
+    <div class="demo-shell">
+      <div class="demo" id="demo">
+        <div class="d-main">
+          <h4>Zoom Meeting</h4>
+          <div class="d-video">Video content</div>
+        </div>
+        <button class="d-toggle" id="dToggle" aria-label="Collapse sidebar"></button>
+        <aside class="d-side" id="dSide" aria-label="Chat and files sidebar">
+          <div class="d-tabs" role="tablist" id="dTabs"></div>
+          <div class="d-body" id="dBody"></div>
+          <div class="d-foot"><button class="d-save" id="dSave"></button></div>
+        </aside>
+        <div class="toast" id="toast" role="status"></div>
+      </div>
+    </div>
+    <p class="note">This is a live recreation written for this page, with larger text than the original. The original prototype screens follow below.</p>
+
+    <h3 style="margin-top:40px">Where each feature came from</h3>
+    <div class="features" id="features"></div>
+
+    <div id="finalShots" style="margin-top:40px"></div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="mono">Final evaluation · 25 participants</p>
+      <h2>Every statement averaged above 4.3 out of 5</h2>
+      <p>Participants used the prototype, then rated eight statements from 1 (strongly disagree) to 5 (strongly agree). The collapsible sidebar scored highest, with no rating below 4.</p>
+    </div>
+    <div class="card">
+      <div id="likert"></div>
+      <div class="legend">
+        <span><i class="s1"></i>1</span><span><i class="s2"></i>2</span><span><i class="s3"></i>3</span><span><i class="s4"></i>4</span><span><i class="s5"></i>5 · strongly agree</span>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:24px">
+      <div class="card">
+        <h3>What worked</h3>
+        <ul style="margin:0;padding-left:20px">
+          <li>The collapsible sidebar was the feature people named most often.</li>
+          <li>Colour-coded tabs and the context-aware Save button were well received.</li>
+          <li>The layout and colours were described as succinct and appealing.</li>
+        </ul>
+        <div class="quote" style="--c:var(--files);margin-top:16px">The collapsable side bar seems very useful.<small>Participant 17</small></div>
+      </div>
+      <div class="card">
+        <h3>What I would change next</h3>
+        <ul style="margin:0;padding-left:20px">
+          <li><strong>Save automatically.</strong> Two participants asked for one save button or automatic saving.</li>
+          <li><strong>Drag and drop</strong> for sharing files.</li>
+          <li><strong>A transcript switch</strong> in Settings.</li>
+          <li><strong>More depth on desktop.</strong> One participant found it better suited to mobile.</li>
+        </ul>
+        <div class="quote" style="--c:var(--warn);margin-top:16px">It would be good for mobile but is too simple for a desktop application.<small>Participant 9</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong style="color:var(--ink)">Jun Huang</strong> · CS6750 Human-Computer Interaction, Georgia Institute of Technology · Individual project, July 2024</p>
+    <p style="margin-top:8px">Charts on this page are computed from the raw survey exports in the report appendix. Sample chat messages and file names are placeholder content from the prototypes. <a href="https://youtu.be/dEuP3QbD-Pw" style="color:var(--chat)">Video prototype on YouTube</a></p>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged screen">
+  <div class="lb-bar">
+    <span id="lbTitle"></span>
+    <button id="lbOut" aria-label="Zoom out">−</button>
+    <button id="lbIn" aria-label="Zoom in">+</button>
+    <button id="lbClose">Close</button>
+  </div>
+  <div class="lb-scroll" id="lbScroll"><img id="lbImg" alt=""></div>
+</div>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+
+/* ---------- process ---------- */
+const STEPS=[
+ [1,'Needfinding','Survey of 25 Zoom users (students, educators, professionals) plus my own heuristic evaluation against three heuristics: visibility of system status, user control and freedom, consistency and standards.'],
+ [1,'Brainstorming','Solo mind mapping and free writing, then a ChatGPT session to widen the pool. I guarded against anchoring and confirmation bias by deliberately looking for ideas that contradicted my first ones. Five themes came out: notifications, file sharing, user control, consistency, cloud integration.'],
+ [1,'Prototyping','Three low-fidelity alternatives built in React: Simplicity and Ease of Use, Enhanced Collaboration, Advanced Features and Customization.'],
+ [1,'Evaluation','25 participants rated each design on access, screen space and the Save function, wrote what they liked and disliked, and voted for a favourite.'],
+ [2,'Planning','The evaluation became a feature list: collapsible sidebar, colour-coded tabs, adjustable width, context-aware Save, search, chat input box, reactions, settings.'],
+ [2,'Final prototype','A medium-fidelity React prototype combining the best parts of all three designs, published on CodeSandbox for participants to use.'],
+ [2,'Video prototype','A recorded walkthrough of every feature, showing the design responding to real interaction.'],
+ [2,'Final evaluation','A new round of 25 participants completed tasks in the prototype and rated eight statements about it.']
+];
+function renderSteps(sel){
+  [1,2].forEach(it=>{const box=$('#steps'+it);box.innerHTML='';
+    STEPS.forEach((s,i)=>{if(s[0]!==it)return;
+      const b=el('button','step'+(i===sel?' on':''),`<span class="mono">Stage ${i+1}</span><b>${s[1]}</b>`);
+      b.setAttribute('aria-pressed',i===sel);b.onclick=()=>renderSteps(i);box.append(b)})});
+  $('#stepDetail').innerHTML=`<p class="mono">Stage ${sel+1} of 8</p><h3 style="margin-top:6px">${STEPS[sel][1]}</h3><p>${STEPS[sel][2]}</p>`;
+}
+renderSteps(0);
+
+/* ---------- survey ---------- */
+const SURVEY=[
+ {k:'How often',q:'How frequently do you use Zoom?',c:'var(--chat)',d:[['Rarely',11],['Monthly',8],['Weekly',4],['Daily',2]],n:'Share of 25 respondents.'},
+ {k:'Used for',q:'What is your primary use for Zoom? (select all that apply)',c:'var(--settings)',d:[['Work',12],['School',12],['Educational',12],['Professional',11],['Personal',5]],n:'Respondents could pick several, so shares add to more than 100%.'},
+ {k:'Chat design',q:'Do you agree that the current Zoom chat feature is not well designed?',c:'var(--chat)',d:[['1 · disagree',0],['2',2],['3 · neutral',14],['4',5],['5 · agree',4]],n:'Mean 3.44. More than half sat at the neutral midpoint; 9 of 25 agreed.'},
+ {k:'File sharing',q:'Do you agree that the file-sharing feature in Zoom is not well designed?',c:'var(--files)',d:[['1 · disagree',0],['2',1],['3 · neutral',17],['4',5],['5 · agree',2]],n:'Mean 3.32. Many respondents had never shared a file in Zoom at all.'},
+ {k:'Save button',q:'Is it important to have a Save Chat History / File button?',c:'var(--files)',d:[['1 · disagree',1],['2',1],['3 · neutral',5],['4',11],['5 · agree',7]],n:'Mean 3.88. 18 of 25 rated it 4 or 5.'},
+ {k:'Satisfaction',q:'Overall, how satisfied are you with chat and file sharing in Zoom?',c:'var(--settings)',d:[['1 · low',1],['2',3],['3 · average',14],['4',7],['5 · high',0]],n:'Mean 3.08. Nobody gave the top score.'}
+];
+function renderSurvey(i){
+  const seg=$('#surveySeg');seg.innerHTML='';
+  SURVEY.forEach((s,j)=>{const b=el('button','',s.k);b.setAttribute('aria-pressed',i===j);b.onclick=()=>renderSurvey(j);seg.append(b)});
+  const s=SURVEY[i];$('#surveyQ').textContent=s.q;$('#surveyNote').textContent=s.n;
+  const max=Math.max(...s.d.map(x=>x[1]));const box=$('#surveyBars');box.innerHTML='';
+  s.d.forEach(([l,v])=>box.append(el('div','bar-row',`<span>${l}</span><div class="bar-track"><div class="bar-fill" style="--c:${s.c};width:${v/max*100}%"></div></div><span class="num">${Math.round(v/25*100)}% <span style="color:var(--muted);font-weight:400">(${v})</span></span>`)));
+}
+renderSurvey(0);
+
+/* ---------- heuristics ---------- */
+const HEUR=[
+ {k:'Visibility of system status · 5',c:'var(--chat)',d:[['Notification delays','Chat notifications arrive late, so messages are missed.'],['Unread message indicators','Not prominent enough to notice.'],['File upload status','No clear feedback that an upload is in progress or succeeded.'],['Chat activity indicator','Hard to tell that new messages arrived during a meeting.'],['System status updates','Upload progress and sent status are not always visible.']]},
+ {k:'User control and freedom · 4',c:'var(--files)',d:[['Undo send','No way to take back a message or file.'],['File deletion','Shared files cannot easily be removed.'],['Message editing','Sent messages cannot be corrected.'],['Exit options','Leaving a chat thread or a file preview is awkward.']]},
+ {k:'Consistency and standards · 3',c:'var(--settings)',d:[['Interface inconsistencies','Button styles and positions vary across the chat interface.'],['File sharing methods','Direct upload and cloud links follow different patterns.'],['Notification styles','Chat and file notifications look different.']]}
+];
+function renderHeur(i){
+  const seg=$('#heurSeg');seg.innerHTML='';
+  HEUR.forEach((h,j)=>{const b=el('button','',h.k);b.setAttribute('aria-pressed',i===j);b.onclick=()=>renderHeur(j);seg.append(b)});
+  const ul=$('#heurList');ul.innerHTML='';
+  HEUR[i].d.forEach(([t,x])=>{const li=el('li','',`<b>${t}</b>${x}`);li.style.setProperty('--c',HEUR[i].c);ul.append(li)});
+}
+renderHeur(0);
+
+/* ---------- designs ---------- */
+const DESIGNS=[
+ {n:1,name:'Simplicity and Ease of Use',c:'var(--chat)',aim:'For people who open Zoom a few times a month and need everything to be obvious.',
+  shots:[['Start','d1-start','Three large colour-coded buttons: Chat in blue, Files in green, Save Chat/Files in yellow. Nothing else competes for attention.'],
+         ['Chat open','d1-chat','Pressing Chat expands the conversation under the buttons. Each message shows sender, text and time.'],
+         ['Files open','d1-files','Pressing Files lists everything shared, with who shared it and when.']],
+  feats:['Large, labelled buttons for Chat and Files','A prominent Save Chat/Files button','Collapsible chat and file sections to reduce clutter'],
+  scores:[4.44,4.04,4.32],pos:'Minimalist, simple to understand.',neg:'Looked plain; three buttons took too much space; the selected section was not highlighted.',
+  quote:'I like the simplicity of the design. But the interface does not look pretty.'},
+ {n:2,name:'Enhanced Collaboration',c:'var(--files)',aim:'For teams that pass files around during a meeting.',
+  shots:[['Chat tab','d2-chat','Chat and Files become tabs across the top of the sidebar. The active tab is tinted, and Save stays pinned to the bottom.'],
+         ['Files tab','d2-files','The Files tab adds Upload File and Share from Cloud above the list of shared files.']],
+  feats:['Tabbed switching between Chat and Files','Upload File and Share from Cloud actions','Scrollable content with a persistent Save button'],
+  scores:[4.48,4.36,4.40],pos:'Visually intuitive and easy to navigate; best use of screen space.',neg:'The Save caption should change with the tab; no chat input box; tabs needed their own colours.',
+  quote:'The caption "Save Chat" "Save Files" should change depending on the tab where you are.'},
+ {n:3,name:'Advanced Features and Customization',c:'var(--settings)',aim:'For power users who want search, settings and control over screen space.',
+  shots:[['Chat tab','d3-chat','A third tab, Settings, joins Chat and Files. A search field sits above the messages, and each message has a thumbs-up reaction.'],
+         ['Files tab','d3-files','The same search field filters shared files.'],
+         ['Settings tab','d3-settings','A dedicated place for customising the Zoom experience.'],
+         ['Sidebar collapsed','d3-collapsed','The arrow on the divider hides the whole sidebar and gives the video the full width.']],
+  feats:['Collapsible sidebar','Search across chat and files','Settings tab and per-message reactions'],
+  scores:[4.40,4.20,4.40],pos:'Customisation, and being able to hide the side panel.',neg:'Some found it complex; the balance between left and right panels was questioned.',
+  quote:'We love customization. It\'s great to be able to hide the side panel.'}
+];
+const QLAB=['Easy to access chat and files','Efficient use of screen space','Save Chat/Files easy to find'];
+
+function stage(shots,title){
+  const wrap=el('div','stage');
+  const bar=el('div','stage-bar');const seg=el('div','seg');seg.setAttribute('role','group');seg.setAttribute('aria-label',title+' screens');
+  const count=el('span','mono');bar.append(seg,count);
+  const btn=el('button','shot');const img=el('img');btn.append(img,el('span','hint','Click to enlarge'));
+  const cap=el('p','caption');
+  let cur=0;
+  function show(i){cur=i;[...seg.children].forEach((b,j)=>b.setAttribute('aria-pressed',i===j));
+    img.src='img/'+shots[i][1]+'.png';img.alt=title+', '+shots[i][0]+': '+shots[i][2];
+    cap.textContent=shots[i][2];count.textContent=`Screen ${i+1} of ${shots.length}`}
+  shots.forEach((s,i)=>{const b=el('button','',s[0]);b.onclick=()=>show(i);seg.append(b)});
+  btn.onclick=()=>openLb(img.src,title+' · '+shots[cur][0]);
+  show(0);wrap.append(bar,btn,cap);return wrap;
+}
+DESIGNS.forEach(d=>{
+  const a=el('article','design');a.style.setProperty('--c',d.c);
+  a.append(el('div','design-top',`<div><span class="badge">Design ${d.n}</span><h3>${d.name}</h3><p>${d.aim}</p></div>`));
+  a.append(stage(d.shots,'Design '+d.n));
+  const info=el('div','design-info');
+  info.append(el('div','',`<h3>Key features</h3><ul>${d.feats.map(f=>`<li>${f}</li>`).join('')}</ul>`));
+  info.append(el('div','',`<h3>Ratings <span class="mono">mean of 5</span></h3>`+d.scores.map((s,i)=>`<div class="score"><span>${QLAB[i]}</span><b class="num">${s.toFixed(2)}</b><div class="bar-track"><div class="bar-fill" style="width:${s/5*100}%;--c:${d.c}"></div></div></div>`).join('')));
+  info.append(el('div','',`<h3>What participants said</h3><p><span class="pos">Liked:</span> ${d.pos}</p><p style="margin-top:8px"><span class="neg">Would change:</span> ${d.neg}</p><div class="quote" style="margin-top:14px;--c:${d.c}">${d.quote}</div>`));
+  a.append(info);$('#designList').append(a);
+});
+
+/* ---------- comparison ---------- */
+const cols=['var(--chat)','var(--files)','var(--settings)'];
+QLAB.forEach((q,qi)=>{
+  const g=el('div','cmp-group',`<div class="lab">${q}</div>`);
+  DESIGNS.forEach((d,di)=>g.append(el('div','cmp-row',`<span>Design ${d.n}</span><div class="bar-track"><div class="bar-fill" style="--c:${cols[di]};width:${(d.scores[qi]-3)/2*100}%"></div></div><b class="num">${d.scores[qi].toFixed(2)}</b>`)));
+  $('#cmp').append(g);
+});
+
+/* ---------- features ---------- */
+[['Collapsible sidebar','From Design 3; asked for again in feedback.','var(--settings)'],
+ ['Colour-coded tabs','Design 1\'s colours, requested for Designs 2 and 3.','var(--chat)'],
+ ['Context-aware Save','Answers the Design 2 comment: Save Chat on Chat, Save Files on Files.','var(--files)'],
+ ['Chat input box','Missing from the first round; a participant pointed it out.','var(--chat)'],
+ ['Search with matching placeholder','From Design 3; reads Search chat, Search files or Search settings.','var(--settings)'],
+ ['Adjustable sidebar width','Answers the left/right ratio comment on Design 3.','var(--settings)'],
+ ['Tabbed layout','Kept from Design 2, the best screen-space score.','var(--files)'],
+ ['Reactions','Thumbs-up on each message, kept from Design 3.','var(--chat)'],
+ ['Settings: notifications and dark mode','Design 3\'s empty Settings tab filled in.','var(--settings)']
+].forEach(f=>{const e=el('div','feat',`<b>${f[0]}</b><span>${f[1]}</span>`);e.style.setProperty('--c',f[2]);$('#features').append(e)});
+
+/* ---------- final screenshots ---------- */
+(()=>{const a=el('article','design');a.style.setProperty('--c','var(--chat)');
+ a.append(el('div','design-top','<div><span class="badge">Original screens</span><h3>Final prototype as tested</h3><p>The four states participants saw, one at a time at full size.</p></div>'));
+ a.append(stage([
+  ['Chat tab','f-chat','Chat is blue. Messages sit on subtle grey cards with a thumbs-up on each, a message box below, and a blue Save Chat button.'],
+  ['Files tab','f-files','Files is green. The search field reads Search files and the button becomes Save Files.'],
+  ['Settings tab','f-settings','Settings is violet: Enable notifications, Dark mode, and a Sidebar width slider.'],
+  ['Sidebar collapsed','f-collapsed','One button on the divider hides the sidebar and returns the full window to the meeting.']],'Final prototype'));
+ $('#finalShots').append(a)})();
+
+/* ---------- lightbox ---------- */
+let lbW=0;
+function openLb(src,title){const im=$('#lbImg');im.src=src;$('#lbTitle').textContent=title;$('#lb').classList.add('open');
+  lbW=Math.min(window.innerWidth-32,1300);im.style.width=lbW+'px';$('#lbClose').focus()}
+function closeLb(){$('#lb').classList.remove('open')}
+$('#lbClose').onclick=closeLb;
+$('#lbIn').onclick=()=>{lbW=Math.min(lbW*1.3,4200);$('#lbImg').style.width=lbW+'px'};
+$('#lbOut').onclick=()=>{lbW=Math.max(lbW/1.3,320);$('#lbImg').style.width=lbW+'px'};
+$('#lb').addEventListener('click',e=>{if(e.target.id==='lb'||e.target.id==='lbScroll')closeLb()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb()});
+
+/* ---------- live demo ---------- */
+const ICON={chat:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+ files:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
+ settings:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+ collapse:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg>',
+ expand:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>',
+ search:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'};
+const TC={chat:'#2563eb',files:'#10b981',settings:'#8b5cf6'};
+const D={tab:'chat',q:'',collapsed:false,dark:false,notify:false,width:400,
+ msgs:[['Alice','Hi everyone! Shall we start the meeting?','10:00 AM',0,false],['Bob',"I'm ready. Just need to share my screen.",'10:01 AM',0,false],['Charlie',"Sure, go ahead Bob. We're waiting.",'10:02 AM',0,false]],
+ files:[['Meeting_Agenda.pdf','Shared by David - Yesterday at 4:30 PM'],['Q2_Report.xlsx','Shared by Alice - Yesterday at 5:15 PM'],['Project_Timeline.png','Shared by Bob - Today at 9:45 AM']]};
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),1800)}
+function placeToggle(){const demo=$('#demo'),t=$('#dToggle');
+  t.style.left=D.collapsed?(demo.clientWidth-26)+'px':(demo.clientWidth-$('#dSide').offsetWidth)+'px'}
+function renderDemo(focusSearch){
+  const demo=$('#demo');demo.classList.toggle('dark',D.dark);demo.classList.toggle('collapsed',D.collapsed);
+  $('#dSide').style.setProperty('--w',D.width+'px');
+  const tg=$('#dToggle');tg.innerHTML=D.collapsed?ICON.expand:ICON.collapse;tg.setAttribute('aria-label',D.collapsed?'Expand sidebar':'Collapse sidebar');
+  const tabs=$('#dTabs');tabs.innerHTML='';
+  ['chat','files','settings'].forEach(k=>{const b=el('button','',ICON[k]+k[0].toUpperCase()+k.slice(1));b.setAttribute('role','tab');b.setAttribute('aria-selected',D.tab===k);b.style.setProperty('--tc',TC[k]);
+    b.onclick=()=>{D.tab=k;D.q='';renderDemo()};tabs.append(b)});
+  const save=$('#dSave');save.textContent=D.tab==='chat'?'Save Chat':'Save Files';save.style.setProperty('--tc',D.tab==='chat'?TC.chat:TC.files);
+  const body=$('#dBody');body.innerHTML='';
+  const s=el('div','d-search',ICON.search+`<input id="demo-search" type="search" aria-label="Search ${D.tab}" placeholder="Search ${D.tab}..." value="${esc(D.q)}">`);
+  body.append(s);const inp=$('input',s);inp.oninput=()=>{D.q=inp.value;renderDemo(true)};
+  if(focusSearch){inp.focus();inp.setSelectionRange(inp.value.length,inp.value.length)}
+  const q=D.q.trim().toLowerCase();
+  if(D.tab==='chat'){
+    const list=D.msgs.map((m,i)=>[m,i]).filter(([m])=>!q||(m[0]+' '+m[1]).toLowerCase().includes(q));
+    list.forEach(([m,i])=>{const it=el('div','d-item',`<div><b>${esc(m[0])}:</b> ${esc(m[1])}<small>${m[2]}</small></div>`);
+      const like=el('button','d-like'+(m[4]?' on':''),'👍'+(m[3]?' '+m[3]:''));like.setAttribute('aria-label','React with thumbs up');
+      like.onclick=()=>{m[4]=!m[4];m[3]+=m[4]?1:-1;renderDemo()};it.append(like);body.append(it)});
+    if(!list.length)body.append(el('p','d-empty','No messages match your search.'));
+    const f=el('form','d-compose','<input id="demo-msg" aria-label="Type your message" placeholder="Type your message..."><button>Send</button>');
+    f.onsubmit=e=>{e.preventDefault();const v=$('input',f).value.trim();if(!v)return;
+      D.msgs.push(['You',v,new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}),0,false]);D.q='';renderDemo();$('#demo-msg').focus();
+      if(D.notify)toast('New message sent')};
+    body.append(f);
+  }else if(D.tab==='files'){
+    const list=D.files.filter(f=>!q||f.join(' ').toLowerCase().includes(q));
+    list.forEach(f=>body.append(el('div','d-item',`<div><b>${f[0]}</b><small>${f[1]}</small></div>`)));
+    if(!list.length)body.append(el('p','d-empty','No files match your search.'));
+  }else{
+    const rows=[['notify','Enable notifications','check'],['dark','Dark mode','check'],['width','Sidebar width','range']].filter(r=>!q||r[1].toLowerCase().includes(q));
+    const box=el('div','d-set','<b style="font-size:1.25rem">Settings</b>');
+    rows.forEach(r=>{if(r[2]==='check'){const l=el('label','',`<input type="checkbox" id="demo-${r[0]}" ${D[r[0]]?'checked':''}> ${r[1]}`);$('input',l).onchange=e=>{D[r[0]]=e.target.checked;renderDemo()};box.append(l)}
+      else{const l=el('div','',`<label for="demo-width">Sidebar width · ${D.width}px</label><input type="range" id="demo-width" min="300" max="560" step="10" value="${D.width}">`);
+        const rg=$('input',l);rg.oninput=()=>{D.width=+rg.value;$('#dSide').style.setProperty('--w',D.width+'px');$('label',l).textContent='Sidebar width · '+D.width+'px';placeToggle()};box.append(l)}});
+    if(!rows.length)box.append(el('p','d-empty','No settings match your search.'));
+    body.append(box);
+  }
+  placeToggle();
+}
+$('#dToggle').onclick=()=>{D.collapsed=!D.collapsed;renderDemo()};
+$('#dSave').onclick=()=>toast(D.tab==='chat'?'Chat history saved (demo)':'Shared files saved (demo)');
+$('#dSide').addEventListener('transitionend',placeToggle);
+window.addEventListener('resize',placeToggle);
+renderDemo();
+
+/* ---------- final likert ---------- */
+[['The collapsible sidebar effectively improves the use of screen space.',4.56,[0,0,0,11,14]],
+ ['The color-coded tabs (Chat, Files, Settings) make navigation intuitive.',4.48,[0,0,2,9,14]],
+ ['The ability to customize sidebar width enhances the user experience.',4.48,[0,0,2,9,14]],
+ ['The "Save Chat/Files" functionality is easy to find and use.',4.44,[0,0,3,8,14]],
+ ['The new interface design is visually appealing.',4.40,[0,1,3,7,14]],
+ ['The chat and file-sharing features are easy to access in this design.',4.40,[0,0,2,11,12]],
+ ['The new design would improve my productivity during Zoom meetings.',4.36,[0,1,2,9,13]],
+ ['I would prefer this new interface over the current Zoom interface.',4.36,[0,0,4,8,13]]
+].forEach(r=>{
+  const bar=r[2].map((c,i)=>c?`<div class="s${i+1}" style="width:${c/25*100}%" title="${c} rated ${i+1}"></div>`:'').join('');
+  $('#likert').append(el('div','lk-row',`<span>${r[0]}</span><div class="lk-bar" role="img" aria-label="Ratings 1 to 5: ${r[2].join(', ')}">${bar}</div><b class="num">${r[1].toFixed(2)}</b>`));
+});
+
+/* ---------- nav highlight ---------- */
+const links=[...document.querySelectorAll('nav a')];
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('section[id]').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
