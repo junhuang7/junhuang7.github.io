@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tomato Timer</title>
+<style>
+  :root{
+    --bg:#fbf6f1; --card:#ffffff; --ink:#2b2420; --muted:#8a7d74; --line:#ece3da;
+    --tomato:#e5533d; --tomato-soft:#fbe3de; --green:#3f9b6a; --green-soft:#dcf0e4;
+    --blue:#3f7bb8; --blue-soft:#dde9f5; --gold:#d9a21b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);
+    display:flex;justify-content:center;padding:24px 16px;min-height:100vh;transition:background .4s}
+  body.short{--accent:var(--green);--accent-soft:var(--green-soft)}
+  body.long{--accent:var(--blue);--accent-soft:var(--blue-soft)}
+  body.work{--accent:var(--tomato);--accent-soft:var(--tomato-soft)}
+  .wrap{width:100%;max-width:560px;display:flex;flex-direction:column;gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+  h1{font-size:20px;margin:0;display:flex;align-items:center;gap:8px}
+  header{display:flex;justify-content:space-between;align-items:center}
+  .icon-btn{background:none;border:1px solid var(--line);border-radius:10px;padding:6px 10px;cursor:pointer;color:var(--ink);font-size:14px}
+  .tabs{display:flex;gap:6px;background:var(--bg);border-radius:12px;padding:4px}
+  .tab{flex:1;border:0;background:none;padding:8px;border-radius:9px;cursor:pointer;font-size:14px;color:var(--muted);font-weight:600}
+  .tab.active{background:var(--card);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .timer{display:flex;flex-direction:column;align-items:center;gap:14px;padding:10px 0 4px}
+  .ring{position:relative;width:240px;height:240px}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .time{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .time .t{font-size:56px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+  .time .lbl{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .controls{display:flex;gap:10px}
+  .btn{border:0;border-radius:12px;padding:12px 26px;font-size:16px;font-weight:700;cursor:pointer}
+  .primary{background:var(--accent);color:#fff;min-width:140px}
+  .ghost{background:var(--accent-soft);color:var(--accent)}
+  .goal-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+  .goal-head .big{font-size:28px;font-weight:800}
+  .goal-head .big small{font-size:15px;color:var(--muted);font-weight:600}
+  .badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--tomato-soft);color:var(--tomato)}
+  .badge.done{background:#fdf1d3;color:#9a6f00}
+  .bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:14px}
+  .bar > div{height:100%;background:var(--tomato);transition:width .4s}
+  .grid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+  .dot{aspect-ratio:1;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:15px}
+  .dot.on{border:0;background:var(--tomato-soft)}
+  .extra-row{margin-top:12px;font-size:14px;color:var(--muted);display:none}
+  .extra-row.show{display:block}
+  .extra-row span{color:var(--gold);font-weight:700}
+  .meta{display:flex;gap:10px;margin-top:14px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+  .meta b{color:var(--ink)}
+  .adjust{display:flex;gap:6px;margin-left:auto}
+  .adjust button{border:1px solid var(--line);background:none;border-radius:8px;padding:2px 9px;cursor:pointer;color:var(--muted)}
+  .week{display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:8px}
+  .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+  .col .b{width:100%;border-radius:6px 6px 2px 2px;background:var(--tomato-soft);position:relative;min-height:2px}
+  .col .b.hit{background:var(--tomato)}
+  .col .n{font-size:11px;font-weight:700}
+  .col .d{font-size:11px;color:var(--muted)}
+  .goal-line{position:relative}
+  .section-title{font-size:14px;font-weight:700;margin:0 0 4px}
+  .sub{font-size:12px;color:var(--muted)}
+  dialog{border:0;border-radius:16px;padding:20px;max-width:360px;width:90%}
+  dialog::backdrop{background:rgba(0,0,0,.3)}
+  .field{display:flex;justify-content:space-between;align-items:center;margin:10px 0;font-size:14px;gap:12px}
+  .field input[type=number]{width:72px;padding:6px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+  .dlg-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+  .dlg-actions .btn{padding:8px 16px;font-size:14px}
+  .danger{background:none;color:#b33;border:1px solid #f0caca}
+  .hint{font-size:12px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body class="work">
+<div class="wrap">
+  <header>
+    <h1>🍅 Tomato Timer</h1>
+    <button class="icon-btn" id="settingsBtn">⚙ Settings</button>
+  </header>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" data-mode="work">Focus</button>
+      <button class="tab" data-mode="short">Short break</button>
+      <button class="tab" data-mode="long">Long break</button>
+    </div>
+    <div class="timer">
+      <div class="ring">
+        <svg width="240" height="240">
+          <circle cx="120" cy="120" r="108" fill="none" stroke="var(--line)" stroke-width="10"/>
+          <circle id="prog" cx="120" cy="120" r="108" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round"/>
+        </svg>
+        <div class="time"><div class="t" id="time">25:00</div><div class="lbl" id="modeLbl">Focus</div></div>
+      </div>
+      <div class="controls">
+        <button class="btn primary" id="startBtn">Start</button>
+        <button class="btn ghost" id="resetBtn" title="Reset">↺</button>
+        <button class="btn ghost" id="skipBtn" title="Skip to next">⏭</button>
+      </div>
+      <div class="hint">Space = start/pause · R = reset · S = skip</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="goal-head">
+      <div>
+        <div class="section-title">Today</div>
+        <div class="big" id="count">0 <small>/ 20 tomatoes</small></div>
+      </div>
+      <span class="badge" id="badge">20 to go</span>
+    </div>
+    <div class="bar"><div id="bar" style="width:0%"></div></div>
+    <div class="grid" id="grid"></div>
+    <div class="extra-row" id="extraRow">Bonus beyond goal: <span id="extra"></span></div>
+    <div class="meta">
+      <div>Focus time: <b id="focusTime">0h 0m</b></div>
+      <div>Streak (goal hit): <b id="streak">0 days</b></div>
+      <div class="adjust" title="Manually correct today's count">
+        <button id="minusBtn">−1</button><button id="plusBtn">+1</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Last 7 days</div>
+    <div class="sub">Solid bars = daily goal reached</div>
+    <div class="week" id="week"></div>
+  </div>
+</div>
+
+<dialog id="dlg">
+  <h3 style="margin:0 0 6px">Settings</h3>
+  <div class="field">Focus (min)<input type="number" id="sWork" min="1" max="120"></div>
+  <div class="field">Short break (min)<input type="number" id="sShort" min="1" max="60"></div>
+  <div class="field">Long break (min)<input type="number" id="sLong" min="1" max="90"></div>
+  <div class="field">Long break every N tomatoes<input type="number" id="sEvery" min="2" max="10"></div>
+  <div class="field">Daily goal (minimum)<input type="number" id="sGoal" min="1" max="60"></div>
+  <div class="field">Auto-start next session<input type="checkbox" id="sAuto"></div>
+  <div class="field">Sound<input type="checkbox" id="sSound"></div>
+  <div class="dlg-actions">
+    <button class="btn danger" id="clearBtn">Clear history</button>
+    <button class="btn ghost" id="cancelBtn">Cancel</button>
+    <button class="btn primary" id="saveBtn" style="min-width:auto">Save</button>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  const LS = {
+    get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+    set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  };
+  const DEF = {work:25, short:5, long:15, every:4, goal:20, auto:false, sound:true};
+  let settings = Object.assign({}, DEF, LS.get('tt_settings', {}));
+  let history = LS.get('tt_history', {}); // { 'YYYY-MM-DD': {count, minutes} }
+
+  const LABEL = {work:'Focus', short:'Short break', long:'Long break'};
+  let mode = 'work', running = false, endAt = 0, remaining = settings.work*60, total = remaining, tick = null;
+  let sinceLong = LS.get('tt_sinceLong', 0);
+
+  const $ = id => document.getElementById(id);
+  const C = 2*Math.PI*108; $('prog').style.strokeDasharray = C;
+
+  const dayKey = (d=new Date()) => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const today = () => history[dayKey()] || {count:0, minutes:0};
+  const fmt = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+
+  function save(){ LS.set('tt_history', history); LS.set('tt_sinceLong', sinceLong); }
+
+  function setMode(m, keepStopped=true){
+    mode = m; document.body.className = m;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.mode===m));
+    remaining = total = settings[m]*60;
+    if(keepStopped) stop();
+    renderTimer();
+  }
+
+  function renderTimer(){
+    $('time').textContent = fmt(Math.max(0, Math.ceil(remaining)));
+    $('modeLbl').textContent = LABEL[mode];
+    $('prog').style.strokeDashoffset = C * (1 - (total - remaining)/total);
+    document.title = (running ? fmt(Math.ceil(remaining))+' · ' : '') + '🍅 ' + today().count + '/' + settings.goal;
+  }
+
+  function start(){
+    if(running) return;
+    running = true; endAt = Date.now() + remaining*1000;
+    $('startBtn').textContent = 'Pause';
+    tick = setInterval(update, 250);
+    if('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+    unlockAudio();
+  }
+  function stop(){
+    running = false; clearInterval(tick);
+    $('startBtn').textContent = 'Start';
+  }
+  function update(){
+    remaining = (endAt - Date.now())/1000;
+    if(remaining <= 0){ remaining = 0; renderTimer(); finish(true); return; }
+    renderTimer();
+  }
+
+  function finish(natural){
+    stop();
+    let next;
+    if(mode === 'work'){
+      if(natural){
+        const k = dayKey(); const t = today();
+        t.count += 1; t.minutes += settings.work; history[k] = t;
+        sinceLong += 1; save(); renderStats();
+        const c = t.count;
+        notify(c === settings.goal ? '🎉 Daily goal reached! '+c+' tomatoes' :
+               c > settings.goal ? '🍅 Bonus tomato #' + (c-settings.goal) + ' done' :
+               '🍅 Tomato ' + c + '/' + settings.goal + ' done — take a break');
+      }
+      if(sinceLong >= settings.every){ next = 'long'; sinceLong = 0; save(); } else next = 'short';
+    } else {
+      if(natural) notify('Break over — back to focus');
+      next = 'work';
+    }
+    if(natural) beep(mode === 'work' ? 3 : 2);
+    setMode(next);
+    if(settings.auto && natural) start();
+  }
+
+  // Audio
+  let actx = null;
+  function unlockAudio(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } }
+  function beep(n){
+    if(!settings.sound || !actx) return;
+    for(let i=0;i<n;i++){
+      const o = actx.createOscillator(), g = actx.createGain(), t0 = actx.currentTime + i*0.35;
+      o.frequency.value = 880; o.type = 'sine';
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.3, t0+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0+0.28);
+      o.connect(g).connect(actx.destination); o.start(t0); o.stop(t0+0.3);
+    }
+  }
+  function notify(msg){
+    try{ if('Notification' in window && Notification.permission === 'granted') new Notification('Tomato Timer', {body: msg}); }catch(e){}
+  }
+
+  // Stats
+  function streak(){
+    let s = 0; const d = new Date();
+    if((history[dayKey(d)]||{count:0}).count < settings.goal) d.setDate(d.getDate()-1); // today not done yet doesn't break it
+    while((history[dayKey(d)]||{count:0}).count >= settings.goal){ s++; d.setDate(d.getDate()-1); }
+    return s;
+  }
+  function renderStats(){
+    const t = today(), g = settings.goal, c = t.count;
+    $('count').innerHTML = c + ' <small>/ ' + g + ' tomatoes</small>';
+    $('bar').style.width = Math.min(100, c/g*100) + '%';
+    const b = $('badge');
+    if(c >= g){ b.className = 'badge done'; b.textContent = c > g ? '★ Goal +' + (c-g) : '★ Goal reached'; }
+    else { b.className = 'badge'; b.textContent = (g-c) + ' to go'; }
+    const grid = $('grid'); grid.innerHTML = '';
+    grid.style.gridTemplateColumns = 'repeat(' + Math.min(10, g) + ',1fr)';
+    for(let i=0;i<g;i++){ const d = document.createElement('div'); d.className = 'dot' + (i<c?' on':''); d.textContent = i<c?'🍅':''; grid.appendChild(d); }
+    const extra = c - g;
+    $('extraRow').classList.toggle('show', extra > 0);
+    $('extra').textContent = extra > 0 ? '+' + extra + ' ' + '⭐'.repeat(Math.min(extra, 15)) + (extra > 15 ? '…' : '') : '';
+    $('focusTime').textContent = Math.floor(t.minutes/60) + 'h ' + (t.minutes%60) + 'm';
+    const s = streak(); $('streak').textContent = s + (s===1?' day':' days');
+    // week
+    const wk = $('week'); wk.innerHTML = '';
+    const days = []; for(let i=6;i>=0;i--){ const d = new Date(); d.setDate(d.getDate()-i); days.push(d); }
+    const max = Math.max(g, ...days.map(d => (history[dayKey(d)]||{count:0}).count));
+    days.forEach(d => {
+      const n = (history[dayKey(d)]||{count:0}).count;
+      const col = document.createElement('div'); col.className = 'col';
+      col.innerHTML = '<div class="n">'+n+'</div><div class="b'+(n>=g?' hit':'')+'" style="height:'+(n/max*80)+'%"></div><div class="d">'+d.toLocaleDateString(undefined,{weekday:'short'})+'</div>';
+      wk.appendChild(col);
+    });
+    renderTimer();
+  }
+
+  // Midnight rollover
+  let lastDay = dayKey();
+  setInterval(() => { if(dayKey() !== lastDay){ lastDay = dayKey(); renderStats(); } }, 30000);
+
+  // Events
+  document.querySelectorAll('.tab').forEach(t => t.onclick = () => setMode(t.dataset.mode));
+  $('startBtn').onclick = () => running ? (stop(), remaining = (endAt-Date.now())/1000, renderTimer()) : start();
+  $('resetBtn').onclick = () => setMode(mode);
+  $('skipBtn').onclick = () => finish(false);
+  $('plusBtn').onclick = () => { const t = today(); t.count++; t.minutes += settings.work; history[dayKey()] = t; save(); renderStats(); };
+  $('minusBtn').onclick = () => { const t = today(); if(t.count>0){ t.count--; t.minutes = Math.max(0, t.minutes-settings.work); history[dayKey()] = t; save(); renderStats(); } };
+  document.addEventListener('keydown', e => {
+    if($('dlg').open || e.target.tagName === 'INPUT') return;
+    if(e.code === 'Space'){ e.preventDefault(); $('startBtn').click(); }
+    else if(e.key.toLowerCase() === 'r') $('resetBtn').click();
+    else if(e.key.toLowerCase() === 's') $('skipBtn').click();
+  });
+
+  // Settings
+  const dlg = $('dlg');
+  $('settingsBtn').onclick = () => {
+    $('sWork').value = settings.work; $('sShort').value = settings.short; $('sLong').value = settings.long;
+    $('sEvery').value = settings.every; $('sGoal').value = settings.goal; $('sAuto').checked = settings.auto; $('sSound').checked = settings.sound;
+    dlg.showModal();
+  };
+  $('cancelBtn').onclick = () => dlg.close();
+  $('saveBtn').onclick = () => {
+    const num = (id, d, lo, hi) => { const v = parseInt($(id).value,10); return isNaN(v) ? d : Math.min(hi, Math.max(lo, v)); };
+    settings = {
+      work: num('sWork', 25, 1, 120), short: num('sShort', 5, 1, 60), long: num('sLong', 15, 1, 90),
+      every: num('sEvery', 4, 2, 10), goal: num('sGoal', 20, 1, 60),
+      auto: $('sAuto').checked, sound: $('sSound').checked
+    };
+    LS.set('tt_settings', settings); dlg.close();
+    if(!running) setMode(mode); renderStats();
+  };
+  $('clearBtn').onclick = () => {
+    if(confirm('Delete all tomato history?')){ history = {}; sinceLong = 0; save(); renderStats(); dlg.close(); }
+  };
+
+  setMode('work'); renderStats();
+})();
+</script>
+</body>
+</html>
