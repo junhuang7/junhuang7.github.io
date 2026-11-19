@@ -3,49 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jun Huang | Scientist</title>
-  <link rel="icon" type="image/jpg" href="logo.png">
-  
+  <title>Jun Huang | Software Engineer</title>
+  <meta name="description" content="Jun Huang — research software engineer building web apps, on-device ML, cloud deployments and Unity/C# 3D applications.">
+  <link rel="icon" type="image/png" href="logo.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-  
+
   <style>
     :root {
-      /* Academic Color Palette */
-      --primary-color: #2b55cc;       /* Deep Academic Blue */
-      --secondary-color: #6c757d;     /* Muted Grey for subtext */
+      --primary-color: #2b55cc;
+      --secondary-color: #6c757d;
       --background-color: #ffffff;
-      --section-bg: #ffffff;
+      --section-bg: #f7f8fa;
       --text-color: #333333;
       --heading-color: #111111;
       --link-color: #2b55cc;
       --border-color: #eeeeee;
-      --nav-bg: rgba(255, 255, 255, 0.95);
+      --nav-bg: rgba(255, 255, 255, 0.92);
       --nav-text: #333;
-      --box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
 
     [data-theme="dark"] {
       --primary-color: #58a6ff;
       --secondary-color: #8b949e;
-      --background-color: #0d1117;    /* GitHub Dark Dimmed style */
+      --background-color: #0d1117;
       --section-bg: #161b22;
       --text-color: #c9d1d9;
       --heading-color: #f0f6fc;
       --link-color: #58a6ff;
       --border-color: #30363d;
-      --nav-bg: rgba(13, 17, 23, 0.95);
+      --nav-bg: rgba(13, 17, 23, 0.92);
       --nav-text: #f0f6fc;
-      --box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
 
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 80px; /* Offset for sticky header */
-    }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 
     body {
       font-family: 'Roboto', sans-serif;
@@ -56,182 +50,131 @@
       transition: background-color 0.3s, color 0.3s;
     }
 
-    /* Typography */
-    h1, h2, h3 {
-      font-family: 'Montserrat', sans-serif;
-      color: var(--heading-color);
-      margin-top: 0;
+    h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--heading-color); margin-top: 0; }
+    h1 { font-size: 2.4rem; margin-bottom: 0.25rem; }
+    h2 {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--secondary-color);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      margin: 0 0 24px;
     }
+    h3 { font-size: 1.1rem; margin-bottom: 4px; }
 
-    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-    h2 { 
-      font-size: 1.8rem; 
-      border-bottom: 2px solid var(--border-color); 
-      padding-bottom: 10px; 
-      margin-bottom: 20px; 
-      margin-top: 40px;
-    }
-    h3 { font-size: 1.25rem; margin-bottom: 5px; }
-
-    a {
-      text-decoration: none;
-      color: var(--link-color);
-      transition: opacity 0.2s;
-    }
+    a { text-decoration: none; color: var(--link-color); }
     a:hover { text-decoration: underline; }
 
-    /* Layout */
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
+    .container { max-width: 820px; margin: 0 auto; padding: 0 20px; }
 
     /* Navbar */
     #navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 1000;
+      position: fixed; top: 0; width: 100%; z-index: 1000;
       background: var(--nav-bg);
-      backdrop-filter: blur(10px); /* Modern frosted glass effect */
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border-color);
-      padding: 1rem 0;
+      padding: 0.9rem 0;
     }
-
-    #nav-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
+    #nav-content { display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-weight: 700; font-size: 1.1rem; font-family: 'Montserrat', sans-serif; color: var(--nav-text); }
     #nav-links a {
       color: var(--nav-text);
       margin-left: 1.5rem;
       font-weight: 500;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    
-    #nav-links a:hover, #nav-links a.active {
-      color: var(--primary-color);
-      text-decoration: none;
-    }
+    #nav-links a:hover, #nav-links a.active { color: var(--primary-color); text-decoration: none; }
 
-    /* Dark Mode Toggle */
-    #theme-toggle-wrapper {
-      display: flex;
-      align-items: center;
-      margin-left: 20px;
-    }
+    #theme-toggle-wrapper { display: flex; align-items: center; margin-left: 20px; }
     #dark-mode-toggle { display: none; }
-    .toggle-icon {
-      cursor: pointer;
-      font-size: 1.2rem;
-      color: var(--nav-text);
-    }
+    .toggle-icon { cursor: pointer; font-size: 1.1rem; color: var(--nav-text); }
     .fa-sun { display: none; }
     [data-theme="dark"] .fa-moon { display: none; }
     [data-theme="dark"] .fa-sun { display: block; }
 
-    /* Sections */
-    .section {
-      padding: 2rem 0;
-      margin-bottom: 2rem;
-    }
+    .section { padding: 2.5rem 0; }
 
-    /* About Section */
-    #about {
-      margin-top: 60px; /* Space for fixed nav */
-      display: flex;
-      gap: 40px;
-      align-items: flex-start;
-    }
-    
-    .profile-img {
-      width: 220px;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 50%;
-      box-shadow: var(--box-shadow);
-      flex-shrink: 0;
-    }
+    /* About */
+    #about { margin-top: 70px; display: flex; gap: 40px; align-items: center; }
+    .profile-img { width: 180px; height: 180px; object-fit: cover; border-radius: 50%; flex-shrink: 0; }
+    .tagline { font-size: 1.05rem; color: var(--secondary-color); margin: 0 0 1rem; }
+    .bio-text p { margin: 0 0 0.8rem; }
+    .contact-links { margin-top: 1.2rem; }
+    .contact-links a { font-size: 1.4rem; margin-right: 16px; color: var(--secondary-color); }
+    .contact-links a:hover { color: var(--primary-color); text-decoration: none; }
 
-    .bio-text { flex-grow: 1; }
-
-    /* Contact Icons */
-    .contact-links { margin-top: 1.5rem; }
-    .contact-links a {
-      font-size: 1.8rem;
-      margin-right: 15px;
-      color: var(--secondary-color);
-      text-decoration: none;
-    }
-    .contact-links a:hover { color: var(--primary-color); }
-
-    /* Research Timeline Style */
-    .research-item {
-      margin-bottom: 1.5rem;
-      padding-left: 15px;
-      border-left: 3px solid var(--border-color);
-    }
-    .research-item:hover { border-left-color: var(--primary-color); }
-    .meta-info {
-      font-size: 0.9rem;
-      color: var(--secondary-color);
-      margin-bottom: 0.5rem;
-      font-style: italic;
-    }
-
-    /* Publications - Hanging Indent */
-    .publication-item {
-      margin-bottom: 1rem;
-      padding-left: 20px;
-      text-indent: -20px;
-    }
-    .publication-item a { font-weight: 500; }
-
-    /* Projects Cards */
-    .project-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-    .project-card {
+    .inspiration {
+      margin-top: 2rem;
+      padding: 14px 18px;
+      border-left: 3px solid var(--primary-color);
       background: var(--section-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 20px;
-      transition: transform 0.2s;
-    }
-    .project-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--box-shadow);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
     }
 
-    /* Footer */
+    /* Projects */
+    .project { padding: 18px 0; border-bottom: 1px solid var(--border-color); }
+    .project:last-child { border-bottom: none; }
+    .project-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .project-head h3 { margin: 0; }
+    .project-head h3 a { color: var(--heading-color); }
+    .project-head h3 a:hover { color: var(--primary-color); text-decoration: none; }
+    .project p { margin: 6px 0 8px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-size: 0.75rem;
+      padding: 1px 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      color: var(--secondary-color);
+    }
+    .project-links { font-size: 0.85rem; white-space: nowrap; }
+    .project-links a { margin-left: 12px; color: var(--secondary-color); }
+    .project-links a:hover { color: var(--primary-color); text-decoration: none; }
+
+    /* Background */
+    .row { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+    .row .what strong { color: var(--heading-color); font-weight: 500; }
+    .row .what span { color: var(--secondary-color); }
+    .row .when { color: var(--secondary-color); font-size: 0.9rem; white-space: nowrap; }
+    .subhead {
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--secondary-color); margin: 1.5rem 0 0.8rem;
+    }
+    .skills { margin: 0; padding: 0; list-style: none; }
+    .skills li { margin-bottom: 4px; }
+    .skills strong { color: var(--heading-color); font-weight: 500; }
+
+    /* Neuroscience (collapsed) */
+    details { border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 18px; }
+    details + details { margin-top: 12px; }
+    summary { cursor: pointer; font-weight: 500; color: var(--heading-color); }
+    details[open] summary { margin-bottom: 12px; }
+    .research-item { margin-bottom: 1rem; padding-left: 14px; border-left: 2px solid var(--border-color); }
+    .research-item h3 { font-size: 1rem; }
+    .meta-info { font-size: 0.85rem; color: var(--secondary-color); font-style: italic; }
+    .research-item p { margin: 4px 0 0; font-size: 0.95rem; }
+    .publication-item { margin-bottom: 0.9rem; padding-left: 20px; text-indent: -20px; font-size: 0.95rem; }
+
     footer {
       text-align: center;
-      padding: 40px 0;
-      font-size: 0.9rem;
+      padding: 32px 0;
+      font-size: 0.85rem;
       color: var(--secondary-color);
       border-top: 1px solid var(--border-color);
-      margin-top: 40px;
+      margin-top: 20px;
     }
-    
-    .clustrmaps-wrapper {
-      margin: 20px auto;
-      display: flex;
-      justify-content: center;
-      opacity: 0.8;
-    }
+    .clustrmaps-wrapper { margin: 0 auto 16px; display: flex; justify-content: center; opacity: 0.7; }
 
-    /* Mobile Responsive */
     @media (max-width: 768px) {
-      #about { flex-direction: column; align-items: center; text-align: center; }
-      .profile-img { margin-bottom: 20px; }
-      #nav-links { display: none; } /* Could add hamburger menu for strict mobile */
+      #about { flex-direction: column; text-align: center; gap: 20px; }
+      .profile-img { width: 150px; height: 150px; }
+      #nav-links { display: none; }
+      .row { flex-direction: column; gap: 0; }
+      .project-links a:first-child { margin-left: 0; }
     }
   </style>
 </head>
@@ -240,19 +183,17 @@
 
   <nav id="navbar">
     <div class="container" id="nav-content">
-      <div style="font-weight: 700; font-size: 1.2rem; font-family: 'Montserrat', sans-serif;">Jun HUANG</div>
-      
+      <div class="brand">Jun HUANG</div>
       <div style="display: flex; align-items: center;">
         <div id="nav-links">
           <a href="#home">About</a>
-          <a href="#research">Research</a>
-          <a href="#publications">Publications</a>
           <a href="#projects">Projects</a>
+          <a href="#background">Background</a>
+          <a href="#neuroscience">Research</a>
         </div>
-
         <div id="theme-toggle-wrapper">
           <input type="checkbox" id="dark-mode-toggle">
-          <label for="dark-mode-toggle" class="toggle-icon">
+          <label for="dark-mode-toggle" class="toggle-icon" title="Toggle theme">
             <i class="fas fa-moon"></i>
             <i class="fas fa-sun"></i>
           </label>
@@ -262,170 +203,245 @@
   </nav>
 
   <div class="container">
-    
+
+    <!-- About -->
     <section id="home" class="section">
       <div id="about">
         <img src="jun.jpg" alt="Jun Huang" class="profile-img">
         <div class="bio-text">
           <h1>Jun HUANG</h1>
-          <p style="font-size: 1.1rem; color: var(--secondary-color); margin-bottom: 1rem;">
-            PhD in Neuroscience (EPFL) | MSc in Computer Science (Georgia Tech)
-          </p>
+          <p class="tagline">Research Software Engineer · MSc CS (Georgia Tech) · PhD (EPFL)</p>
           <p>
-            I am a scientist at the intersection of neuroscience and artificial intelligence. I hold a PhD from EPFL, where my thesis explored dopamine dynamics in reward-based learning, and I am furthering my AI expertise with graduate training in Computer Science at Georgia Tech.
+            I build prototypes end to end: web front ends and back ends, on-device ML,
+            containerized cloud deployments and Unity/C# 3D applications. I work daily with
+            agentic AI coding tools, and my research background brings experimental design
+            and careful data analysis to the software I make.
           </p>
-          <p>In my free time I enjoy hiking in the Alps, skiing, and photography.</p>
-          
+          <p>Based in Zurich. Outside of code: hiking in the Alps, skiing and photography.</p>
           <div class="contact-links">
-            <a href="https://www.linkedin.com/in/junhuang7" target="_blank"><i class="fab fa-linkedin"></i></a>
-            <a href="https://github.com/junhuang7" target="_blank"><i class="fab fa-github"></i></a>
-            <a href="https://www.instagram.com/jun_photographie" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.youtube.com/@junhuang7" target="_blank"><i class="fab fa-youtube"></i></a>
-            <a href="mailto:junhuang7@gmail.com"><i class="fas fa-envelope"></i></a>
+            <a href="https://www.linkedin.com/in/junhuang7" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/junhuang7" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://www.instagram.com/jun_photographie" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/@junhuang7" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="mailto:junhuang7@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
           </div>
         </div>
       </div>
 
-      <div style="margin-top: 30px; padding: 15px; background: var(--section-bg); border-radius: 8px; border: 1px solid var(--border-color);">
-        <h3 style="margin-top: 0;">News</h3>
-        <ul style="margin: 0; padding-left: 20px;">
-          <li><strong>2023-12-13:</strong> Jun's website is up and running 🤩</li>
-        </ul>
+      <div class="inspiration">
+        My biggest inspiration is
+        <a href="https://www.youtube.com/watch?v=6I06-ITW88k" target="_blank" rel="noopener"><strong>Rafa Nadal</strong></a>:
+        fight for every point.
       </div>
     </section>
 
-    <section id="research" class="section">
-      <h2>Research Experience</h2>
-      
-      <div class="research-item">
-        <h3>Studying the Neural Mechanisms Underlying Chronic Pain</h3>
-        <div class="meta-info">Neuronal Plasticity Group, University of Bern | Dec 2022 - Present</div>
-        <p>Studied the neural mechanisms of chronic pain and its relief, using miniscope, fiber photometry, patch clamp and other techniques, with a focus on the ACC-PAG circuitry.</p>
-      </div>
-
-      <div class="research-item">
-        <h3>Investigating the Neural Mechanisms in Reward-Based Learning</h3>
-        <div class="meta-info">Laboratory of Behavioral Genetics, EPFL | June 2018 - Dec 2022</div>
-        <p>Investigated the neural mechanisms underlying the individual differences in reward-based learning tasks, focusing on dopamine dynamics.</p>
-      </div>
-
-      <div class="research-item">
-        <h3>Understanding the Late-Associativity in Auditory-Amygdala Circuits</h3>
-        <div class="meta-info">CAS Key Laboratory of Brain Function & Diseases, USTC | Sept 2015 - Dec 2017</div>
-        <p>Investigated the temporal requirements for fear conditioning association.</p>
-      </div>
-
-      <div class="research-item">
-        <h3>Developing a Psycho-Physiology Recording Platform for Rodents</h3>
-        <div class="meta-info">Cell Electrophysiology Laboratory, Wannan Medical College | Nov 2010 - June 2013</div>
-        <p>Established a platform for synchronized recording of central neural activities and peripheral functions.</p>
-      </div>
-    </section>
-
-    <section id="publications" class="section">
-      <h2>Selected Publications</h2>
-      
-      <div class="publication-item">
-        <a href="https://www.cell.com/heliyon/fulltext/S2405-8440(24)13862-5">Dopamine dynamics in nucleus accumbens across reward-based learning of goal-directed whisker-to-lick sensorimotor transformations in mice</a><br>
-        <strong>Huang, J.</strong>, Crochet, S., Sandi, C., and Petersen, C., 2024. <em>Heliyon</em>, Volume 10, Issue 18, e37831.
-      </div>
-
-      <div class="publication-item">
-        <a href="https://molecularbrain.biomedcentral.com/articles/10.1186/s13041-020-00587-4">High frequency optogenetic activation of inputs to the lateral amygdala forms distant association with foot-shock</a><br>
-        Li, F., Jia, C.H., <strong>Huang, J.</strong>, Bi, G.Q., and Lau, P.M., 2020. <em>Molecular Brain</em>. 13(1), pp.1-4.
-      </div>
-
-      <div class="publication-item">
-        <a href="https://oversea.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFD&dbname=CJFDLAST2015&filename=YLZL201509014&uniplatform=OVERSEAS_EN&v=sFuZw0oQwRN9wSldnqlaz7acS5Isbfc6_1iYm6jSu_euLroaiYxP-3dWbVJQ6KAr">Single morphine exposure distinctively enhances morphine-sensitivity of amygdala and nucleus accumbens in rats</a><br>
-        Cheng, X.C., Zhang, S., <strong>Huang, J.</strong>, Wang, W.W., Liu, W., and Wang, M.Y., 2015. <em>Chinese Journal of Clinical Pharmacology and Therapeutics</em>. 2015(09) Page:998-1003.
-      </div>
-
-      <div class="publication-item">
-        <a href="https://oversea.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFD&dbname=CJFD2013&filename=WNYX201305028&uniplatform=OVERSEAS_EN&v=VMZ7HAIkDS6mNbD8Nrp6-U3rYbwxZ-rfrIGr2JaZ7fE3j9UEvDpIr_IyYLpN3FXh">Simultaneous recordings of electrical activities from dual brain nuclei and multiple physiological functions in adult rats</a><br>
-        Liu, W., Wang, W.W., <strong>Huang, J.</strong>, and Wang, M.Y., 2013. <em>Acta Academiae Medicinae Wannan</em>. 32(5), pp.423-429.
-      </div>
-    </section>
-
+    <!-- Projects -->
     <section id="projects" class="section">
-      <h2>CS Projects</h2>
-      <div class="project-grid">
-        
-        <div class="project-card">
-          <h3><a href="https://github.com/junhuang7/SoundAlertWTH2"><i class="fab fa-github"></i> Sound Alert App</a></h3>
-          <p>A mobile application for sound classification and alerting. Yamnet is deployed on Android device to classify sound and alert user when a specific sound is detected. Built with Android Studio, Tensorflow, Java, and Python.</p>
-        </div>
+      <h2>Software Projects</h2>
 
-        <div class="project-card">
-          <h3><a href="https://github.com/junhuang7/ghost_escape_game"><i class="fab fa-github"></i> Ghost Escape</a></h3>
-          <p>A 3D Haunted Mansion video game built with Unity and C#. Players navigate trapped rooms and solve puzzles to unlock doors and escape from ghosts.</p>
+      <div class="project">
+        <div class="project-head">
+          <h3><a href="https://github.com/junhuang7/SkinWise" target="_blank" rel="noopener">SkinWise</a></h3>
+          <div class="project-links">
+            <a href="https://github.com/junhuang7/SkinWise" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+            <a href="https://www.youtube.com/watch?v=niJBk8xmLeM" target="_blank" rel="noopener"><i class="fab fa-youtube"></i> Demo</a>
+          </div>
         </div>
+        <p>Full-stack skin-cancer diagnostic web app: upload a lesion image, get a prediction from a CNN trained on ISIC. Full CRUD on patient and condition records via a HAPI FHIR R4 server; containerized and deployed on AWS EC2. Team of three.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">Flask</span><span class="tag">Streamlit</span><span class="tag">TensorFlow</span><span class="tag">FHIR</span><span class="tag">Docker</span><span class="tag">AWS</span></div>
+      </div>
 
+      <div class="project">
+        <div class="project-head">
+          <h3><a href="https://github.com/junhuang7/ghost_escape_game" target="_blank" rel="noopener">Ghost Escape</a></h3>
+          <div class="project-links">
+            <a href="https://github.com/junhuang7/ghost_escape_game" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+            <a href="https://www.youtube.com/watch?v=DvjgXZBBaf0" target="_blank" rel="noopener"><i class="fab fa-youtube"></i> Gameplay</a>
+            <a href="https://www.youtube.com/watch?v=vIgSpEi47co" target="_blank" rel="noopener"><i class="fas fa-film"></i> Trailer</a>
+          </div>
+        </div>
+        <p>3D horror-puzzle game: navigate trapped rooms, solve puzzles and escape a ghost. Built an AI chase agent, player-health system and UI. Team project.</p>
+        <div class="tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">Game AI</span></div>
+      </div>
+
+      <div class="project">
+        <div class="project-head">
+          <h3><a href="https://github.com/junhuang7/SoundAlertWTH2" target="_blank" rel="noopener">Sound Alert</a></h3>
+          <div class="project-links">
+            <a href="https://github.com/junhuang7/SoundAlertWTH2" target="_blank" rel="noopener"><i class="fab fa-github"></i> Java app</a>
+            <a href="https://github.com/junhuang7/sound_alert_yamnet" target="_blank" rel="noopener"><i class="fab fa-github"></i> Kotlin app</a>
+            <a href="https://www.youtube.com/watch?v=k5jNCguwLqs&t=140s" target="_blank" rel="noopener"><i class="fab fa-youtube"></i> Demo</a>
+          </div>
+        </div>
+        <p>On-device ML Android apps that notify you when the sound level crosses a threshold or a TinyML model detects an alert sound, plus a companion app for real-time YAMNet audio classification.</p>
+        <div class="tags"><span class="tag">Android</span><span class="tag">Java</span><span class="tag">Kotlin</span><span class="tag">TensorFlow Lite</span><span class="tag">YAMNet</span></div>
+      </div>
+
+      <div class="project">
+        <div class="project-head">
+          <h3><a href="https://github.com/junhuang7/LifePilot" target="_blank" rel="noopener">LifePilot</a></h3>
+          <div class="project-links">
+            <a href="https://github.com/junhuang7/LifePilot" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+          </div>
+        </div>
+        <p>Smart task scheduler built in one day by a team of four at the IBM × GDG Zurich “Bobathon” hackathon (Apr 2026). Mood- and goal-based task generation, priority scheduling without overlaps, ICS calendar import and in-browser persistence.</p>
+        <div class="tags"><span class="tag">JavaScript</span><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">Hackathon</span></div>
+      </div>
+
+      <div class="project">
+        <div class="project-head">
+          <h3><a href="https://github.com/junhuang7/gemini-bulk-deleter" target="_blank" rel="noopener">Gemini Chat Bulk Deleter</a></h3>
+          <div class="project-links">
+            <a href="https://github.com/junhuang7/gemini-bulk-deleter" target="_blank" rel="noopener"><i class="fab fa-github"></i> Code</a>
+          </div>
+        </div>
+        <p>Chrome extension that adds multi-select bulk deletion to the Gemini sidebar, kept in sync with the dynamically re-rendered page via a MutationObserver.</p>
+        <div class="tags"><span class="tag">JavaScript</span><span class="tag">Chrome Extension</span><span class="tag">DOM</span></div>
       </div>
     </section>
 
-  </div> <footer>
+    <!-- Background -->
+    <section id="background" class="section">
+      <h2>Background</h2>
+
+      <div class="subhead" style="margin-top: 0;">Skills</div>
+      <ul class="skills">
+        <li><strong>Web:</strong> JavaScript, HTML/CSS, Python (Flask, Streamlit), REST APIs, SQL, browser extensions</li>
+        <li><strong>ML &amp; data:</strong> TensorFlow, TensorFlow Lite, OpenCV, Python, MATLAB, R</li>
+        <li><strong>Mobile &amp; 3D:</strong> Android (Java, Kotlin), Unity, C#</li>
+        <li><strong>Cloud &amp; tooling:</strong> Docker, AWS EC2, Git, FHIR, agentic AI coding tools</li>
+      </ul>
+
+      <div class="subhead">Education</div>
+      <div class="row">
+        <div class="what"><strong>MSc Computer Science</strong> <span>· Georgia Institute of Technology (GPA 3.9/4.0)</span></div>
+        <div class="when">2023 – Dec 2026</div>
+      </div>
+      <div class="row">
+        <div class="what"><strong>PhD Neuroscience</strong> <span>· EPFL, Lausanne</span></div>
+        <div class="when">2018 – 2022</div>
+      </div>
+
+      <div class="subhead">Experience</div>
+      <div class="row">
+        <div class="what"><strong>Research Scientist</strong> <span>· Roumai Medical SA, Lausanne</span></div>
+        <div class="when">2025 – present</div>
+      </div>
+      <div class="row">
+        <div class="what"><strong>Postdoctoral Researcher</strong> <span>· University of Bern</span></div>
+        <div class="when">2022 – 2025</div>
+      </div>
+      <div class="row">
+        <div class="what"><strong>PhD Student</strong> <span>· EPFL</span></div>
+        <div class="when">2018 – 2022</div>
+      </div>
+    </section>
+
+    <!-- Neuroscience (sidelined) -->
+    <section id="neuroscience" class="section">
+      <h2>Neuroscience Research</h2>
+
+      <details>
+        <summary>Research experience</summary>
+
+        <div class="research-item">
+          <h3>Neural mechanisms underlying chronic pain</h3>
+          <div class="meta-info">Neuronal Plasticity Group, University of Bern · Dec 2022 – Apr 2025</div>
+          <p>Miniscope, fiber photometry and patch clamp, focusing on the ACC–PAG circuitry; built custom fiber photometry setups and analyzed 20 TB of imaging data.</p>
+        </div>
+
+        <div class="research-item">
+          <h3>Neural mechanisms in reward-based learning</h3>
+          <div class="meta-info">Laboratory of Behavioral Genetics, EPFL · June 2018 – Nov 2022</div>
+          <p>Individual differences in reward-based learning, focusing on dopamine dynamics. Open-sourced the <a href="https://github.com/junhuang7/huang_et_al" target="_blank" rel="noopener">Python/MATLAB data pipelines</a>.</p>
+        </div>
+
+        <div class="research-item">
+          <h3>Late-associativity in auditory–amygdala circuits</h3>
+          <div class="meta-info">CAS Key Laboratory of Brain Function &amp; Diseases, USTC · Sept 2015 – Dec 2017</div>
+          <p>Temporal requirements for fear-conditioning association.</p>
+        </div>
+
+        <div class="research-item">
+          <h3>Psycho-physiology recording platform for rodents</h3>
+          <div class="meta-info">Cell Electrophysiology Laboratory, Wannan Medical College · Nov 2010 – June 2013</div>
+          <p>Synchronized recording of central neural activity and peripheral functions.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Publications</summary>
+
+        <div class="publication-item">
+          <a href="https://www.cell.com/heliyon/fulltext/S2405-8440(24)13862-5" target="_blank" rel="noopener">Dopamine dynamics in nucleus accumbens across reward-based learning of goal-directed whisker-to-lick sensorimotor transformations in mice</a><br>
+          <strong>Huang, J.</strong>, Crochet, S., Sandi, C., and Petersen, C., 2024. <em>Heliyon</em>, 10(18), e37831.
+        </div>
+
+        <div class="publication-item">
+          <a href="https://molecularbrain.biomedcentral.com/articles/10.1186/s13041-020-00587-4" target="_blank" rel="noopener">High frequency optogenetic activation of inputs to the lateral amygdala forms distant association with foot-shock</a><br>
+          Li, F., Jia, C.H., <strong>Huang, J.</strong>, Bi, G.Q., and Lau, P.M., 2020. <em>Molecular Brain</em>, 13(1), 44.
+        </div>
+
+        <div class="publication-item">
+          <a href="https://oversea.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFD&dbname=CJFDLAST2015&filename=YLZL201509014&uniplatform=OVERSEAS_EN&v=sFuZw0oQwRN9wSldnqlaz7acS5Isbfc6_1iYm6jSu_euLroaiYxP-3dWbVJQ6KAr" target="_blank" rel="noopener">Single morphine exposure distinctively enhances morphine-sensitivity of amygdala and nucleus accumbens in rats</a><br>
+          Cheng, X.C., Zhang, S., <strong>Huang, J.</strong>, Wang, W.W., Liu, W., and Wang, M.Y., 2015. <em>Chinese Journal of Clinical Pharmacology and Therapeutics</em>, 2015(09), 998–1003.
+        </div>
+
+        <div class="publication-item">
+          <a href="https://oversea.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFD&dbname=CJFD2013&filename=WNYX201305028&uniplatform=OVERSEAS_EN&v=VMZ7HAIkDS6mNbD8Nrp6-U3rYbwxZ-rfrIGr2JaZ7fE3j9UEvDpIr_IyYLpN3FXh" target="_blank" rel="noopener">Simultaneous recordings of electrical activities from dual brain nuclei and multiple physiological functions in adult rats</a><br>
+          Liu, W., Wang, W.W., <strong>Huang, J.</strong>, and Wang, M.Y., 2013. <em>Acta Academiae Medicinae Wannan</em>, 32(5), 423–429.
+        </div>
+      </details>
+    </section>
+
+  </div>
+
+  <footer>
     <div class="container">
       <div class="clustrmaps-wrapper">
         <script type="text/javascript" id="mapmyvisitors" src="https://mapmyvisitors.com/map.js?d=iOxJ-dxUPwtZSaHIFA2r-f063TQnNJRzOLXfadFL9io&cl=ffffff&w=a"></script>
       </div>
-      <p>
-        &copy; <span id="year"></span> Jun HUANG. <br>
-        Today is: <span id="date"></span>
-      </p>
+      <p>&copy; <span id="year"></span> Jun HUANG</p>
     </div>
   </footer>
 
   <script>
-    // 1. Date Logic
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    document.getElementById('date').textContent = formattedDate;
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 2. Theme Logic
+    // Theme
     const themeToggle = document.getElementById('dark-mode-toggle');
     const htmlElement = document.documentElement;
 
     function applyTheme(isDark) {
-      if (isDark) {
-        htmlElement.setAttribute('data-theme', 'dark');
-      } else {
-        htmlElement.removeAttribute('data-theme');
-      }
+      if (isDark) htmlElement.setAttribute('data-theme', 'dark');
+      else htmlElement.removeAttribute('data-theme');
     }
 
-    // Initialize based on local storage or default to dark
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    let savedTheme = 'dark';
+    try { savedTheme = localStorage.getItem('theme') || 'dark'; } catch (e) {}
     const isDarkMode = savedTheme === 'dark';
-    
     themeToggle.checked = isDarkMode;
     applyTheme(isDarkMode);
 
-    themeToggle.addEventListener('change', function(event) {
+    themeToggle.addEventListener('change', (event) => {
       const isDark = event.target.checked;
       applyTheme(isDark);
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
     });
 
-    // 3. Navbar Active State on Scroll (Optional but nice for single page)
-    const sections = document.querySelectorAll("section");
-    const navLi = document.querySelectorAll("#nav-links a");
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('#nav-links a');
 
-    window.onscroll = () => {
-      var current = "";
+    window.addEventListener('scroll', () => {
+      let current = '';
       sections.forEach((section) => {
-        const sectionTop = section.offsetTop;
-        if (pageYOffset >= sectionTop - 150) {
-          current = section.getAttribute("id");
-        }
+        if (window.scrollY >= section.offsetTop - 150) current = section.id;
       });
-
-      navLi.forEach((li) => {
-        li.classList.remove("active");
-        if (li.getAttribute("href").includes(current)) {
-          li.classList.add("active");
-        }
+      navLinks.forEach((a) => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
       });
-    };
+    });
   </script>
 
 </body>
